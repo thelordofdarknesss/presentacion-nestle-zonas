@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clientes Helados — Nestlé Chile</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="contenedor">
+
+  <header class="encabezado">
+    <h1>Clientes Helados — Nestlé Chile</h1>
+    <p>Jerarquía de clientes por centro de distribución y región · Año 2025</p>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi"><div class="numero" id="kpi-clientes">—</div><div class="rotulo">Clientes únicos</div></div>
+    <div class="kpi"><div class="numero" id="kpi-centros">—</div><div class="rotulo">Centros de distribución</div></div>
+    <div class="kpi"><div class="numero" id="kpi-regiones">—</div><div class="rotulo">Regiones con venta</div></div>
+    <div class="kpi"><div class="numero" id="kpi-pnv">—</div><div class="rotulo">PNV total 2025 (CLP)</div></div>
+  </div>
+
+  <div class="paneles">
+    <div class="panel">
+      <h2>Clientes por región</h2>
+      <div id="barras-region"></div>
+    </div>
+    <div class="panel">
+      <h2>Clientes por centro de origen</h2>
+      <div id="barras-centro"></div>
+    </div>
+  </div>
+
+  <div class="tabla-panel">
+    <h2>Tabla de clientes</h2>
+    <div class="filtros">
+      <select id="f-centro"><option value="">Todos los centros</option></select>
+      <select id="f-region"><option value="">Todas las regiones</option></select>
+      <select id="f-canal"><option value="">Todos los canales</option></select>
+      <input id="f-buscar" type="text" placeholder="Buscar cliente...">
+    </div>
+    <div class="contador" id="contador"></div>
+    <div class="tabla-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th data-col="Centro_Origen">Centro</th>
+            <th data-col="Region_Zona">Región</th>
+            <th data-col="Canal_L4">Canal</th>
+            <th data-col="Cliente">Cliente</th>
+            <th data-col="Meses_Con_Venta">Meses c/venta</th>
+            <th data-col="Cajas_2025">Cajas 2025</th>
+            <th data-col="PNV_2025_CLP">PNV 2025 (CLP)</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-tabla"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>Generado automáticamente desde el export SAP con Python/pandas.</footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
