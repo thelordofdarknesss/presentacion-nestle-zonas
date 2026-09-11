@@ -1,0 +1,2240 @@
+{
+  "kpis": {
+    "clientes_unicos": 60,
+    "centros": 6,
+    "regiones": 16,
+    "pnv_total": 187473235028.0
+  },
+  "por_region": [
+    {
+      "Region_Zona": "RM - Santiago",
+      "Cantidad_Clientes": 34
+    },
+    {
+      "Region_Zona": "VIII - Concepción",
+      "Cantidad_Clientes": 21
+    },
+    {
+      "Region_Zona": "IX - Temuco",
+      "Cantidad_Clientes": 20
+    },
+    {
+      "Region_Zona": "VI - Rancagua",
+      "Cantidad_Clientes": 19
+    },
+    {
+      "Region_Zona": "X - Puerto Montt",
+      "Cantidad_Clientes": 18
+    },
+    {
+      "Region_Zona": "IV - Coquimbo",
+      "Cantidad_Clientes": 14
+    },
+    {
+      "Region_Zona": "V - Valparaiso",
+      "Cantidad_Clientes": 14
+    },
+    {
+      "Region_Zona": "VII - Talca",
+      "Cantidad_Clientes": 12
+    },
+    {
+      "Region_Zona": "XIV - Los Ríos",
+      "Cantidad_Clientes": 12
+    },
+    {
+      "Region_Zona": "XII - Punta Arenas",
+      "Cantidad_Clientes": 12
+    },
+    {
+      "Region_Zona": "XVI - Ñuble",
+      "Cantidad_Clientes": 10
+    },
+    {
+      "Region_Zona": "II - Antofagasta",
+      "Cantidad_Clientes": 8
+    },
+    {
+      "Region_Zona": "XV-Arica-Parinacota",
+      "Cantidad_Clientes": 8
+    },
+    {
+      "Region_Zona": "III - Copiapo",
+      "Cantidad_Clientes": 7
+    },
+    {
+      "Region_Zona": "I - Iquique",
+      "Cantidad_Clientes": 7
+    },
+    {
+      "Region_Zona": "XI - Coyhaique",
+      "Cantidad_Clientes": 2
+    }
+  ],
+  "por_centro": [
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Cantidad_Clientes": 40
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Cantidad_Clientes": 24
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Cantidad_Clientes": 24
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Cantidad_Clientes": 12
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Cantidad_Clientes": 8
+    },
+    {
+      "Centro_Origen": "CL DC Keylogistics",
+      "Cantidad_Clientes": 1
+    }
+  ],
+  "tabla": [
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Bodegas Walmart",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 1264884.0,
+      "PNV_2025_CLP": 18322581440
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Centro Distribuidores",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 752029.0,
+      "PNV_2025_CLP": 9305666682
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R09 Concepcion",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 501977.083,
+      "PNV_2025_CLP": 7529821216
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Centro Distribuidores",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 587880.0,
+      "PNV_2025_CLP": 7433408190
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R07 Rancagua",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 433118.24199999997,
+      "PNV_2025_CLP": 6680729798
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R06 Stgo Suroriente",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 431834.097,
+      "PNV_2025_CLP": 6665994490
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R01 La Serena Coquimbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 404613.083,
+      "PNV_2025_CLP": 6113574798
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R04 Stgo Oriente",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 374306.05700000003,
+      "PNV_2025_CLP": 6039125323
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R05 Stgo Poniente",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 386452.826,
+      "PNV_2025_CLP": 5898857377
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "II - Antofagasta",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Norte Distribuidores",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 450525.0,
+      "PNV_2025_CLP": 5697001159
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R08 Chillan Los Angeles",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 383708.0,
+      "PNV_2025_CLP": 5619008114
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R02 Stgo Centro",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 349920.583,
+      "PNV_2025_CLP": 5559905374
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R03 Stgo Sur",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 340963.587,
+      "PNV_2025_CLP": 5288430575
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R11 Puerto Montt",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 349321.0,
+      "PNV_2025_CLP": 5236150568
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Norte Distribuidores",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 415194.0,
+      "PNV_2025_CLP": 5219071692
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 238500.0,
+      "PNV_2025_CLP": 4166311702
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Sur Distribuidores",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 341707.0,
+      "PNV_2025_CLP": 4074408226
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 237923.0,
+      "PNV_2025_CLP": 3521271712
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R10 Temuco Valdivia",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 237627.0,
+      "PNV_2025_CLP": 3447511881
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 208635.0,
+      "PNV_2025_CLP": 3409642479
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Stgo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 210462.0,
+      "PNV_2025_CLP": 3321293430
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 167573.16700000002,
+      "PNV_2025_CLP": 3230431330
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Norte Distribuidores",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 255045.0,
+      "PNV_2025_CLP": 3208992848
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "I - Iquique",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Norte Distribuidores",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 239258.0,
+      "PNV_2025_CLP": 2835685572
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Panaderias y Tiendas de",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 120242.0,
+      "PNV_2025_CLP": 2287651922
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Region_Zona": "XV-Arica-Parinacota",
+      "Canal_L4": "L4 CL Operadores Comerciales",
+      "Cliente": "L5 CL Oper. Com. Norte",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 153651.0,
+      "PNV_2025_CLP": 2229569136
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R10 Temuco Valdivia",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 140471.0,
+      "PNV_2025_CLP": 2103089560
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Tottus",
+      "Cliente": "L5 CL Tottus",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 125620.0,
+      "PNV_2025_CLP": 2021305441
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Resto Planificada",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 120994.917,
+      "PNV_2025_CLP": 1927631545
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "III - Copiapo",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Norte Distribuidores",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 135103.0,
+      "PNV_2025_CLP": 1704467423
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Sur Distribuidores",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 140942.0,
+      "PNV_2025_CLP": 1690330188
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 101035.0,
+      "PNV_2025_CLP": 1630400186
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Sur Distribuidores",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 126201.0,
+      "PNV_2025_CLP": 1525177045
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "XI - Coyhaique",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Sur Distribuidores",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 117441.0,
+      "PNV_2025_CLP": 1460037541
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Heladerias V2",
+      "Cliente": "L5 Cl Heladerias Stgo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 119932.0,
+      "PNV_2025_CLP": 1368806169
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 70494.0,
+      "PNV_2025_CLP": 1192953036
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "II - Antofagasta",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Stgo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 49850.0,
+      "PNV_2025_CLP": 915228626
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 57108.0,
+      "PNV_2025_CLP": 863001798
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 44768.0,
+      "PNV_2025_CLP": 819372049
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 61274.0,
+      "PNV_2025_CLP": 815396561
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 48072.0,
+      "PNV_2025_CLP": 720449543
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 43743.0,
+      "PNV_2025_CLP": 688837415
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 39390.0,
+      "PNV_2025_CLP": 637822920
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Supermercados Planificada",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 39572.0,
+      "PNV_2025_CLP": 636371744
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 30736.0,
+      "PNV_2025_CLP": 580880072
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R08 Chillan Los Angeles",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 38887.0,
+      "PNV_2025_CLP": 576157489
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "II - Antofagasta",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 33542.0,
+      "PNV_2025_CLP": 568182226
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 34513.0,
+      "PNV_2025_CLP": 553659648
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "II - Antofagasta",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 34806.5,
+      "PNV_2025_CLP": 529562644
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Supermercados Planificada",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 31245.0,
+      "PNV_2025_CLP": 515348011
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL Tottus",
+      "Cliente": "L5 CL Tottus",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 30880.0,
+      "PNV_2025_CLP": 508229496
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 26809.0,
+      "PNV_2025_CLP": 492785296
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 34415.0,
+      "PNV_2025_CLP": 483722024
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R11 Puerto Montt",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 32390.0,
+      "PNV_2025_CLP": 475067786
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 25211.0,
+      "PNV_2025_CLP": 458861672
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Hipermercado Lider",
+      "Meses_Con_Venta": 4,
+      "Cajas_2025": 34051.0,
+      "PNV_2025_CLP": 455516210
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 31553.0,
+      "PNV_2025_CLP": 449649300
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "III - Copiapo",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 31102.0,
+      "PNV_2025_CLP": 445590315
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "II - Antofagasta",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Hipermercado Lider",
+      "Meses_Con_Venta": 10,
+      "Cajas_2025": 29460.0,
+      "PNV_2025_CLP": 440809586
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Supermercados Planificada",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 26294.0,
+      "PNV_2025_CLP": 430068800
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 29263.667,
+      "PNV_2025_CLP": 424897604
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 20490.0,
+      "PNV_2025_CLP": 379731754
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 26577.0,
+      "PNV_2025_CLP": 374315724
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Sur Distribuidores",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 29791.0,
+      "PNV_2025_CLP": 373247696
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 22207.0,
+      "PNV_2025_CLP": 355615020
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 21313.0,
+      "PNV_2025_CLP": 347476156
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Supermercados Planificada",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 22232.0,
+      "PNV_2025_CLP": 346371262
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Otros Atc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 17510.0,
+      "PNV_2025_CLP": 325839951
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 19938.0,
+      "PNV_2025_CLP": 314902661
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 19193.0,
+      "PNV_2025_CLP": 309464058
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 20302.0,
+      "PNV_2025_CLP": 307420318
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 18610.0,
+      "PNV_2025_CLP": 301637059
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "III - Copiapo",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 16807.0,
+      "PNV_2025_CLP": 275482803
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 20117.0,
+      "PNV_2025_CLP": 275457822
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Lider Express",
+      "Meses_Con_Venta": 4,
+      "Cajas_2025": 18134.0,
+      "PNV_2025_CLP": 273121017
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Tottus",
+      "Cliente": "L5 CL Tottus",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 15991.0,
+      "PNV_2025_CLP": 258649588
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "XVI - Ñuble",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R08 Chillan Los Angeles",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 16836.0,
+      "PNV_2025_CLP": 257596183
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 15673.0,
+      "PNV_2025_CLP": 245451884
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Mayoristas Dist Tradicional",
+      "Cliente": "L5 CL Mayoristas HD",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 14341.0,
+      "PNV_2025_CLP": 243655542
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "XVI - Ñuble",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 17552.0,
+      "PNV_2025_CLP": 240823818
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Alvi",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 16672.0,
+      "PNV_2025_CLP": 233060854
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Hipermercado Lider",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 17441.0,
+      "PNV_2025_CLP": 231099231
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "II - Antofagasta",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 13364.0,
+      "PNV_2025_CLP": 230110446
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "I - Iquique",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 14633.0,
+      "PNV_2025_CLP": 225165075
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Spid",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 12949.0,
+      "PNV_2025_CLP": 224936894
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL E Commerce Cencosud",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 11481.0,
+      "PNV_2025_CLP": 220651000
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 13011.0,
+      "PNV_2025_CLP": 218443452
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Mayorista 10",
+      "Meses_Con_Venta": 9,
+      "Cajas_2025": 15668.0,
+      "PNV_2025_CLP": 204044026
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 11782.0,
+      "PNV_2025_CLP": 203447889
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "II - Antofagasta",
+      "Canal_L4": "L4 CL Tottus",
+      "Cliente": "L5 CL Tottus",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 12443.0,
+      "PNV_2025_CLP": 200985016
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 12576.0,
+      "PNV_2025_CLP": 200748722
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Region_Zona": "XV-Arica-Parinacota",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Hipermercado Lider",
+      "Meses_Con_Venta": 9,
+      "Cajas_2025": 13517.0,
+      "PNV_2025_CLP": 191393381
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R08 Chillan Los Angeles",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 13058.0,
+      "PNV_2025_CLP": 190938909
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Heladerias V2",
+      "Cliente": "L5 CL Heladerias Puerto Montt",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 16632.0,
+      "PNV_2025_CLP": 183576351
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Tottus",
+      "Cliente": "L5 CL Tottus",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 11187.0,
+      "PNV_2025_CLP": 180633363
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Heladerias V2",
+      "Cliente": "L5 Cl Heladerias Stgo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 17416.0,
+      "PNV_2025_CLP": 173522060
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "I - Iquique",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Hipermercado Lider",
+      "Meses_Con_Venta": 9,
+      "Cajas_2025": 11393.0,
+      "PNV_2025_CLP": 167780069
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL Tottus",
+      "Cliente": "L5 CL Tottus",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 10312.0,
+      "PNV_2025_CLP": 164909999
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "I - Iquique",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Stgo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 8934.0,
+      "PNV_2025_CLP": 163938908
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL M&M",
+      "Cliente": "L5 CL M&M Stgo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 10162.0,
+      "PNV_2025_CLP": 161859316
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL Tottus",
+      "Cliente": "L5 CL Tottus",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 9798.0,
+      "PNV_2025_CLP": 160562165
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "III - Copiapo",
+      "Canal_L4": "L4 CL Tottus",
+      "Cliente": "L5 CL Tottus",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 8530.0,
+      "PNV_2025_CLP": 142104110
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 8566.0,
+      "PNV_2025_CLP": 136092086
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 7515.0,
+      "PNV_2025_CLP": 133845732
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Heladerias V2",
+      "Cliente": "L5 CL Heladerias Temuco Valdivia",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 13392.0,
+      "PNV_2025_CLP": 132426377
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Region_Zona": "XV-Arica-Parinacota",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 7924.0,
+      "PNV_2025_CLP": 125747816
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL C Store Corporativo",
+      "Cliente": "L5 CL Conveniencia",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 6544.0,
+      "PNV_2025_CLP": 124354280
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "I - Iquique",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 6769.0,
+      "PNV_2025_CLP": 122363681
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL Heladerias V2",
+      "Cliente": "L5 CL Heladerias La Serena Coquimbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 12072.0,
+      "PNV_2025_CLP": 121664033
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "III - Copiapo",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 7421.0,
+      "PNV_2025_CLP": 118752162
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Heladerias V2",
+      "Cliente": "L5 CL Heladerias Chillan Los Angele",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 11902.0,
+      "PNV_2025_CLP": 117250539
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Supermercados Planificada",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 6641.0,
+      "PNV_2025_CLP": 110054543
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Supermercados Planificada",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 6755.0,
+      "PNV_2025_CLP": 107093115
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 6207.0,
+      "PNV_2025_CLP": 101756131
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Region_Zona": "XV-Arica-Parinacota",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 6477.0,
+      "PNV_2025_CLP": 96150227
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Supermercados Y Grandes Tda",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 5413.0,
+      "PNV_2025_CLP": 91769112
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Inactivos SMU",
+      "Meses_Con_Venta": 8,
+      "Cajas_2025": 5950.0,
+      "PNV_2025_CLP": 86464820
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL E Commerce",
+      "Cliente": "L5 CL E Commerce",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 4967.0,
+      "PNV_2025_CLP": 86068570
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 5281.0,
+      "PNV_2025_CLP": 83311285
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Region_Zona": "XV-Arica-Parinacota",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 5270.0,
+      "PNV_2025_CLP": 80245415
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Concepcion",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 4385.0,
+      "PNV_2025_CLP": 79917762
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Panaderias y Tiendas de",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 4408.0,
+      "PNV_2025_CLP": 78190034
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Region_Zona": "XV-Arica-Parinacota",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 3857.0,
+      "PNV_2025_CLP": 73600000
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "XVI - Ñuble",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Jumbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 4324.0,
+      "PNV_2025_CLP": 71716635
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Mayorista 10",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 5147.0,
+      "PNV_2025_CLP": 67807274
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Rancagua",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 3512.0,
+      "PNV_2025_CLP": 63287397
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "I - Iquique",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 3490.0,
+      "PNV_2025_CLP": 58284191
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 CL C Store Corporativo",
+      "Cliente": "L5 CL Petroleras CS",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 2890.0,
+      "PNV_2025_CLP": 54428272
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Puerto Montt",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 2805.0,
+      "PNV_2025_CLP": 53463578
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Heladerias V2",
+      "Cliente": "L5 CL Heladerias Rancagua",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 5291.0,
+      "PNV_2025_CLP": 52689550
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Mayorista 10",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 4112.0,
+      "PNV_2025_CLP": 50097898
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL Heladerias V2",
+      "Cliente": "L5 CL Heladerias Temuco Valdivia",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 4929.0,
+      "PNV_2025_CLP": 49079499
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Supermercados Planificada",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 3094.0,
+      "PNV_2025_CLP": 48666648
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Bodegas Cencosud",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 2510.0,
+      "PNV_2025_CLP": 46497672
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Panaderias y Tiendas de",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 2673.0,
+      "PNV_2025_CLP": 46363736
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Chillan Los Angeles",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 2725.0,
+      "PNV_2025_CLP": 46131491
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "XVI - Ñuble",
+      "Canal_L4": "L4 CL Tottus",
+      "Cliente": "L5 CL Tottus",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 2889.0,
+      "PNV_2025_CLP": 45612746
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 Cl Empleados",
+      "Cliente": "L5 Cl Empleados",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 2721.0,
+      "PNV_2025_CLP": 41818015
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "XVI - Ñuble",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Supermercados Planificada",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 2655.0,
+      "PNV_2025_CLP": 41132078
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Otros Atc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 2268.0,
+      "PNV_2025_CLP": 39364890
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 CL Tradicional Helados",
+      "Cliente": "L5 CL Tradicional Sur",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 3228.0,
+      "PNV_2025_CLP": 38948919
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Mayorista 10",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 3044.0,
+      "PNV_2025_CLP": 38835755
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce La Serena Coquimbo",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 1735.0,
+      "PNV_2025_CLP": 34297654
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Region_Zona": "I - Iquique",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Sisa",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 2200.0,
+      "PNV_2025_CLP": 33026232
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Mayorista 10",
+      "Meses_Con_Venta": 6,
+      "Cajas_2025": 2798.0,
+      "PNV_2025_CLP": 32743869
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "II - Antofagasta",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Lider Express",
+      "Meses_Con_Venta": 9,
+      "Cajas_2025": 1931.0,
+      "PNV_2025_CLP": 31512511
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XI - Coyhaique",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 1750.0,
+      "PNV_2025_CLP": 31490708
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 Cl Empleados",
+      "Cliente": "L5 Cl Empleados",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 1631.0,
+      "PNV_2025_CLP": 28989807
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Supermercados Planificada",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 1702.0,
+      "PNV_2025_CLP": 26501850
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Otros Atc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 1422.0,
+      "PNV_2025_CLP": 24460678
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Alvi",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 1799.0,
+      "PNV_2025_CLP": 23296890
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R10 Temuco Valdivia",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 1514.0,
+      "PNV_2025_CLP": 22276237
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Temuco Valdivia",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 1262.0,
+      "PNV_2025_CLP": 22195634
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Mayorista 10",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 1819.0,
+      "PNV_2025_CLP": 21624352
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Alvi",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 1562.0,
+      "PNV_2025_CLP": 21068932
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Mayorista 10",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 1645.0,
+      "PNV_2025_CLP": 21053873
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Otros Atc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 1121.0,
+      "PNV_2025_CLP": 19587245
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Alvi",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 1339.0,
+      "PNV_2025_CLP": 19013454
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Mayorista 10",
+      "Meses_Con_Venta": 9,
+      "Cajas_2025": 1409.0,
+      "PNV_2025_CLP": 18906442
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 976.0,
+      "PNV_2025_CLP": 18515078
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Otros Atc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 1015.0,
+      "PNV_2025_CLP": 17406357
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Alvi",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 1320.0,
+      "PNV_2025_CLP": 16652042
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Alvi",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 1179.0,
+      "PNV_2025_CLP": 16288236
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Alvi",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 1331.0,
+      "PNV_2025_CLP": 15995544
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Mayorista 10",
+      "Meses_Con_Venta": 10,
+      "Cajas_2025": 1173.0,
+      "PNV_2025_CLP": 15387429
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Bodegas Cencosud",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 866.0,
+      "PNV_2025_CLP": 15086308
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 Cl Empleados",
+      "Cliente": "L5 Cl Empleados",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 1071.0,
+      "PNV_2025_CLP": 15035030
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL Compra Planificada",
+      "Cliente": "L5 CL Supermercados Planificada",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 794.0,
+      "PNV_2025_CLP": 13416032
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Temuco Valdivia",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 648.0,
+      "PNV_2025_CLP": 12275008
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "XVI - Ñuble",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Mayorista 10",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 840.0,
+      "PNV_2025_CLP": 11481890
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Otros Atc",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 664.0,
+      "PNV_2025_CLP": 11351572
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Bodegas Cencosud",
+      "Meses_Con_Venta": 4,
+      "Cajas_2025": 690.0,
+      "PNV_2025_CLP": 10643672
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Panaderias y Tiendas de",
+      "Meses_Con_Venta": 10,
+      "Cajas_2025": 572.0,
+      "PNV_2025_CLP": 9839546
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Inactivos SMU",
+      "Meses_Con_Venta": 7,
+      "Cajas_2025": 672.0,
+      "PNV_2025_CLP": 9611380
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 Cl Empleados",
+      "Cliente": "L5 Cl Empleados",
+      "Meses_Con_Venta": 8,
+      "Cajas_2025": 625.0,
+      "PNV_2025_CLP": 9587112
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Bodegas Cencosud",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 551.0,
+      "PNV_2025_CLP": 8791470
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Inactivos SMU",
+      "Meses_Con_Venta": 6,
+      "Cajas_2025": 592.0,
+      "PNV_2025_CLP": 8503128
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "III - Copiapo",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R01 La Serena Coquimbo",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 507.0,
+      "PNV_2025_CLP": 8184482
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Inactivos SMU",
+      "Meses_Con_Venta": 7,
+      "Cajas_2025": 506.0,
+      "PNV_2025_CLP": 7374338
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R09 Concepcion",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 468.0,
+      "PNV_2025_CLP": 6858905
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Panaderias y Tiendas de",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 385.0,
+      "PNV_2025_CLP": 6773822
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Sur Distribuidores",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": 378.0,
+      "PNV_2025_CLP": 6385306
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "XVI - Ñuble",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Alvi",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 429.0,
+      "PNV_2025_CLP": 6271212
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Inactivos SMU",
+      "Meses_Con_Venta": 7,
+      "Cajas_2025": 416.0,
+      "PNV_2025_CLP": 5937886
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Inactivos SMU",
+      "Meses_Con_Venta": 7,
+      "Cajas_2025": 399.0,
+      "PNV_2025_CLP": 5711800
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Sur Distribuidores",
+      "Meses_Con_Venta": 2,
+      "Cajas_2025": 450.0,
+      "PNV_2025_CLP": 5178240
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Petroleras",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 265.0,
+      "PNV_2025_CLP": 4961364
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Alvi",
+      "Meses_Con_Venta": 2,
+      "Cajas_2025": 374.0,
+      "PNV_2025_CLP": 4858532
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Temuco Valdivia",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 198.0,
+      "PNV_2025_CLP": 4091484
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Spid",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 244.0,
+      "PNV_2025_CLP": 3971320
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Alvi",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": 287.0,
+      "PNV_2025_CLP": 3697630
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Inactivos SMU",
+      "Meses_Con_Venta": 7,
+      "Cajas_2025": 236.0,
+      "PNV_2025_CLP": 3387446
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Region_Zona": "XV-Arica-Parinacota",
+      "Canal_L4": "L4 CL Opc Arica",
+      "Cliente": "L5 CL Opc Arica Corp",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 154.0,
+      "PNV_2025_CLP": 3133936
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Atc V2",
+      "Cliente": "L5 CL R11 Atc Corp",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 148.0,
+      "PNV_2025_CLP": 3045734
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Region_Zona": "I - Iquique",
+      "Canal_L4": "L4 CL Operadores Comerciales",
+      "Cliente": "L5 CL Oper. Com. Norte",
+      "Meses_Con_Venta": 12,
+      "Cajas_2025": 228.0,
+      "PNV_2025_CLP": 3038002
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Cencosud",
+      "Cliente": "L5 CL Bodegas Cencosud",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": 140.0,
+      "PNV_2025_CLP": 3007554
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R08 Chillan Los Angeles",
+      "Meses_Con_Venta": 10,
+      "Cajas_2025": 165.0,
+      "PNV_2025_CLP": 2670018
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Inactive Clients",
+      "Cliente": "L5 CL Inactive Clients",
+      "Meses_Con_Venta": 2,
+      "Cajas_2025": 134.0,
+      "PNV_2025_CLP": 2416902
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Stgo",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 105.0,
+      "PNV_2025_CLP": 2319444
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "XIV - Los Ríos",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Panaderias y Tiendas de",
+      "Meses_Con_Venta": 9,
+      "Cajas_2025": 127.0,
+      "PNV_2025_CLP": 2100158
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 CL Inactivos SMU",
+      "Meses_Con_Venta": 7,
+      "Cajas_2025": 145.0,
+      "PNV_2025_CLP": 2079896
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL SMU",
+      "Cliente": "L5 Cl Unimarc",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 111.0,
+      "PNV_2025_CLP": 1522423
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 CL Atc",
+      "Cliente": "L5 CL Otros Atc",
+      "Meses_Con_Venta": 6,
+      "Cajas_2025": 68.0,
+      "PNV_2025_CLP": 1356842
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R08 Chillan Los Angeles",
+      "Meses_Con_Venta": 11,
+      "Cajas_2025": 82.5,
+      "PNV_2025_CLP": 1332322
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R08 Chillan Los Angeles",
+      "Meses_Con_Venta": 8,
+      "Cajas_2025": 122.0,
+      "PNV_2025_CLP": 1308777
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VII - Talca",
+      "Canal_L4": "L4 CL Heladerias V2",
+      "Cliente": "L5 Cl Heladerias Stgo",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": 150.0,
+      "PNV_2025_CLP": 1117480
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "IV - Coquimbo",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R07 Rancagua",
+      "Meses_Con_Venta": 7,
+      "Cajas_2025": 69.0,
+      "PNV_2025_CLP": 889478
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "V - Valparaiso",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Stgo",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": 42.0,
+      "PNV_2025_CLP": 855940
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R10 Temuco Valdivia",
+      "Meses_Con_Venta": 8,
+      "Cajas_2025": 48.0,
+      "PNV_2025_CLP": 630472
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R11 Puerto Montt",
+      "Meses_Con_Venta": 3,
+      "Cajas_2025": 48.0,
+      "PNV_2025_CLP": 604800
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Chillan Los Angeles",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 34.0,
+      "PNV_2025_CLP": 496054
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Arica",
+      "Region_Zona": "XV-Arica-Parinacota",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 Cl Ce Opc",
+      "Meses_Con_Venta": 2,
+      "Cajas_2025": 31.0,
+      "PNV_2025_CLP": 393934
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Norte Distribuidores",
+      "Meses_Con_Venta": 2,
+      "Cajas_2025": 22.5,
+      "PNV_2025_CLP": 351787
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Norte Distribuidores",
+      "Meses_Con_Venta": 3,
+      "Cajas_2025": 17.0,
+      "PNV_2025_CLP": 336348
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R01 La Serena Coquimbo",
+      "Meses_Con_Venta": 5,
+      "Cajas_2025": 23.0,
+      "PNV_2025_CLP": 317270
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "XVI - Ñuble",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Chillan Los Angeles",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": 24.0,
+      "PNV_2025_CLP": 308128
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 CL Distribuidores V2",
+      "Cliente": "L5 CL Centro Distribuidores",
+      "Meses_Con_Venta": 2,
+      "Cajas_2025": 19.0,
+      "PNV_2025_CLP": 260086
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 Cl Empleados",
+      "Cliente": "L5 Cl Empleados",
+      "Meses_Con_Venta": 6,
+      "Cajas_2025": 17.0,
+      "PNV_2025_CLP": 168705
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VI - Rancagua",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R08 Chillan Los Angeles",
+      "Meses_Con_Venta": 3,
+      "Cajas_2025": 13.0,
+      "PNV_2025_CLP": 156282
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "XII - Punta Arenas",
+      "Canal_L4": "L4 Cl Empleados",
+      "Cliente": "L5 CL Empleados Plana Mayor",
+      "Meses_Con_Venta": 3,
+      "Cajas_2025": 11.0,
+      "PNV_2025_CLP": 107629
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "IX - Temuco",
+      "Canal_L4": "L4 Cl Empleados",
+      "Cliente": "L5 Cl Empleados",
+      "Meses_Con_Venta": 3,
+      "Cajas_2025": 7.0,
+      "PNV_2025_CLP": 102675
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 Cl Empleados",
+      "Cliente": "L5 CL Empleados Plana Mayor",
+      "Meses_Con_Venta": 4,
+      "Cajas_2025": 10.0,
+      "PNV_2025_CLP": 72081
+    },
+    {
+      "Centro_Origen": "CL DI 3PL Punta Arenas",
+      "Region_Zona": "VIII - Concepción",
+      "Canal_L4": "L4 Cl Empleados",
+      "Cliente": "L5 CL Empleados Plana Mayor",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": 3.0,
+      "PNV_2025_CLP": 6615
+    },
+    {
+      "Centro_Origen": "CL DC Keylogistics",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Canal Especializado",
+      "Cliente": "L5 CL Ce Stgo",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": -5.0,
+      "PNV_2025_CLP": -100004
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "XVI - Ñuble",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Acuenta",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": -10.0,
+      "PNV_2025_CLP": -136560
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R11 Puerto Montt",
+      "Meses_Con_Venta": 2,
+      "Cajas_2025": -18.0,
+      "PNV_2025_CLP": -175328
+    },
+    {
+      "Centro_Origen": "CL DC Concepcion",
+      "Region_Zona": "XVI - Ñuble",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Lider Express",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": -25.0,
+      "PNV_2025_CLP": -341400
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Ruta Tradicional",
+      "Cliente": "L5 CL R07 Rancagua",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": -39.0,
+      "PNV_2025_CLP": -669012
+    },
+    {
+      "Centro_Origen": "CL DC Temuco",
+      "Region_Zona": "X - Puerto Montt",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Lider Express",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": -48.0,
+      "PNV_2025_CLP": -707831
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Hipermercado Lider",
+      "Meses_Con_Venta": 3,
+      "Cajas_2025": -125.0,
+      "PNV_2025_CLP": -1793080
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "III - Copiapo",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Hipermercado Lider",
+      "Meses_Con_Venta": 1,
+      "Cajas_2025": -125.0,
+      "PNV_2025_CLP": -1941854
+    },
+    {
+      "Centro_Origen": "CL PL & DC Macul",
+      "Region_Zona": "RM - Santiago",
+      "Canal_L4": "L4 CL Walmart",
+      "Cliente": "L5 CL Lider Express",
+      "Meses_Con_Venta": 3,
+      "Cajas_2025": -134.0,
+      "PNV_2025_CLP": -2244163
+    }
+  ],
+  "opciones": {
+    "centros": [
+      "CL DC Concepcion",
+      "CL DC Keylogistics",
+      "CL DC Temuco",
+      "CL DI 3PL Arica",
+      "CL DI 3PL Punta Arenas",
+      "CL PL & DC Macul"
+    ],
+    "regiones": [
+      "I - Iquique",
+      "II - Antofagasta",
+      "III - Copiapo",
+      "IV - Coquimbo",
+      "IX - Temuco",
+      "RM - Santiago",
+      "V - Valparaiso",
+      "VI - Rancagua",
+      "VII - Talca",
+      "VIII - Concepción",
+      "X - Puerto Montt",
+      "XI - Coyhaique",
+      "XII - Punta Arenas",
+      "XIV - Los Ríos",
+      "XV-Arica-Parinacota",
+      "XVI - Ñuble"
+    ],
+    "canales": [
+      "L4 CL Atc",
+      "L4 CL Atc V2",
+      "L4 CL C Store Corporativo",
+      "L4 CL Canal Especializado",
+      "L4 CL Cencosud",
+      "L4 CL Compra Planificada",
+      "L4 CL Distribuidores V2",
+      "L4 CL E Commerce",
+      "L4 CL Heladerias V2",
+      "L4 CL Inactive Clients",
+      "L4 CL M&M",
+      "L4 CL Mayoristas Dist Tradicional",
+      "L4 CL Opc Arica",
+      "L4 CL Operadores Comerciales",
+      "L4 CL Ruta Tradicional",
+      "L4 CL SMU",
+      "L4 CL Tottus",
+      "L4 CL Tradicional Helados",
+      "L4 CL Walmart",
+      "L4 Cl Empleados"
+    ]
+  }
+}
