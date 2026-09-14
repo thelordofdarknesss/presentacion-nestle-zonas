@@ -15,7 +15,7 @@ body {
   font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
-.contenedor { max-width: 1080px; margin: 0 auto; padding: 40px 24px 80px; }
+.contenedor { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
 header.encabezado { margin-bottom: 32px; }
 header.encabezado h1 { font-size: 28px; font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; }
 header.encabezado p { margin: 0; color: var(--ink-soft); font-size: 14px; }
@@ -30,7 +30,7 @@ header.encabezado p { margin: 0; color: var(--ink-soft); font-size: 14px; }
 .paneles { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px 22px; }
 .panel h2 { font-size: 15px; font-weight: 600; margin: 0 0 14px; }
-.barra-fila { display: grid; grid-template-columns: 130px 1fr 60px; align-items: center; gap: 10px; padding: 5px 0; }
+.barra-fila { display: grid; grid-template-columns: 140px 1fr 70px; align-items: center; gap: 10px; padding: 5px 0; }
 .barra-etiqueta { font-size: 12.5px; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .barra-pista { background: var(--accent-soft); border-radius: 4px; height: 10px; overflow: hidden; }
 .barra-valor { background: var(--accent); height: 100%; border-radius: 4px; }
@@ -42,13 +42,14 @@ header.encabezado p { margin: 0; color: var(--ink-soft); font-size: 14px; }
   font-family: inherit; font-size: 13px; padding: 7px 10px;
   border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink);
 }
-.filtros input { flex: 1; min-width: 180px; }
+.filtros select { min-width: 140px; }
+.filtros input { flex: 1; min-width: 200px; }
 .contador { color: var(--ink-soft); font-size: 12.5px; margin-bottom: 8px; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table { width: 100%; min-width: 860px; border-collapse: collapse; font-size: 13px; }
 th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
 th { color: var(--ink-soft); font-weight: 600; cursor: pointer; user-select: none; white-space: nowrap; }
 th:hover { color: var(--accent); }
-td.num { text-align: right; font-variant-numeric: tabular-nums; }
+th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
 tbody tr:hover { background: var(--accent-soft); }
-.tabla-scroll { max-height: 480px; overflow-y: auto; border-radius: 6px; }
+.tabla-scroll { max-height: 480px; overflow-x: auto; overflow-y: auto; border-radius: 6px; }
 footer { margin-top: 28px; color: var(--ink-soft); font-size: 12px; }
