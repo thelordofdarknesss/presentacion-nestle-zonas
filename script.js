@@ -14,6 +14,17 @@ function formatoNumero(n) {
   return Math.round(Number(n) || 0).toLocaleString('es-CL');
 }
 
+// Extrae la ciudad automáticamente si no viene en el JSON
+function extraerCiudad(regionZona) {
+  if (!regionZona) return '—';
+  if (regionZona.includes(' - ')) {
+    return regionZona.split(' - ')[1].trim();
+  } else if (regionZona.includes('-')) {
+    return regionZona.split('-')[1].trim();
+  }
+  return regionZona.trim();
+}
+
 function pintarKPIs(kpis) {
   if (!kpis) return;
   document.getElementById('kpi-clientes').textContent = kpis.clientes_unicos || '—';
@@ -41,7 +52,6 @@ function pintarBarras(contenedorId, filas, columnaEtiqueta, columnaValor) {
   }).join('');
 }
 
-// Protección con Array.isArray para evitar fallas por undefined
 function poblarSelect(elSelect, opciones) {
   if (!elSelect || !Array.isArray(opciones)) return;
   opciones.forEach(op => {
@@ -112,6 +122,13 @@ fetch('datos_dashboard.json')
   .then(payload => {
     datos = Array.isArray(payload.tabla) ? payload.tabla : [];
 
+    // Asignar campo Ciudad a cada registro en memoria
+    datos.forEach(f => {
+      if (!f.Ciudad) {
+        f.Ciudad = extraerCiudad(f.Region_Zona);
+      }
+    });
+
     pintarKPIs(payload.kpis);
     pintarBarras('barras-region', payload.por_region, 'Region_Zona', 'Cantidad_Clientes');
     pintarBarras('barras-centro', payload.por_centro, 'Centro_Origen', 'Cantidad_Clientes');
@@ -119,7 +136,12 @@ fetch('datos_dashboard.json')
     if (payload.opciones) {
       poblarSelect(elCentro, payload.opciones.centros);
       poblarSelect(elRegion, payload.opciones.regiones);
-      poblarSelect(elCiudad, payload.opciones.ciudades);
+
+      // Si no vienen ciudades en el JSON, se generan dinámicamente
+      const listaCiudades = payload.opciones.ciudades ||
+        Array.from(new Set(datos.map(d => d.Ciudad).filter(Boolean))).sort();
+      poblarSelect(elCiudad, listaCiudades);
+
       poblarSelect(elCanal, payload.opciones.canales);
     }
 
