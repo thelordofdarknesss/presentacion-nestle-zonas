@@ -4,6 +4,7 @@ let ordenAsc = false;
 
 const elCentro = document.getElementById('f-centro');
 const elRegion = document.getElementById('f-region');
+const elCiudad = document.getElementById('f-ciudad');
 const elCanal = document.getElementById('f-canal');
 const elBuscar = document.getElementById('f-buscar');
 const elCuerpo = document.getElementById('cuerpo-tabla');
@@ -46,11 +47,17 @@ function poblarSelect(elSelect, opciones) {
 }
 
 function render() {
+  const busqueda = elBuscar.value.toLowerCase().trim();
+
   let filas = datos.filter(f =>
     (!elCentro.value || f.Centro_Origen === elCentro.value) &&
     (!elRegion.value || f.Region_Zona === elRegion.value) &&
+    (!elCiudad.value || f.Ciudad === elCiudad.value) &&
     (!elCanal.value || f.Canal_L4 === elCanal.value) &&
-    (!elBuscar.value || f.Cliente.toLowerCase().includes(elBuscar.value.toLowerCase()))
+    (!busqueda ||
+      f.Cliente.toLowerCase().includes(busqueda) ||
+      f.Canal_L4.toLowerCase().includes(busqueda) ||
+      f.Ciudad.toLowerCase().includes(busqueda))
   );
 
   filas.sort((a, b) => {
@@ -61,11 +68,12 @@ function render() {
     return 0;
   });
 
-  elContador.textContent = `${filas.length} de ${datos.length} clientes`;
+  elContador.textContent = `${filas.length} de ${datos.length} registros`;
   elCuerpo.innerHTML = filas.map(f => `
     <tr>
       <td>${f.Centro_Origen}</td>
       <td>${f.Region_Zona}</td>
+      <td>${f.Ciudad}</td>
       <td>${f.Canal_L4}</td>
       <td>${f.Cliente}</td>
       <td class="num">${f.Meses_Con_Venta}</td>
@@ -75,7 +83,7 @@ function render() {
 }
 
 function iniciarEventos() {
-  [elCentro, elRegion, elCanal].forEach(el => el.addEventListener('change', render));
+  [elCentro, elRegion, elCiudad, elCanal].forEach(el => el.addEventListener('change', render));
   elBuscar.addEventListener('input', render);
 
   document.querySelectorAll('th[data-col]').forEach(th => {
@@ -102,6 +110,7 @@ fetch('datos_dashboard.json')
 
     poblarSelect(elCentro, payload.opciones.centros);
     poblarSelect(elRegion, payload.opciones.regiones);
+    poblarSelect(elCiudad, payload.opciones.ciudades);
     poblarSelect(elCanal, payload.opciones.canales);
 
     iniciarEventos();
