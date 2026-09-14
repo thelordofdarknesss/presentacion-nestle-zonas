@@ -78,7 +78,7 @@ for col in ['PNV_CLP', 'Cajas']:
   df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
 
-# 2. Separar Región y Ciudad
+# Separar Región y Ciudad
 def dividir_region_ciudad(val):
   val = str(val).strip()
   if ' - ' in val:
@@ -90,7 +90,23 @@ def dividir_region_ciudad(val):
   return val, val
 
 
-df[['Region', 'Ciudad']] = df['Region_Zona'].apply(dividir_region_ciudad).tolist()
+df[['Region', 'Ciudad']] = (
+    df['Region_Zona'].apply(dividir_region_ciudad).tolist()
+)
+
+# Agrupar incluyendo 'Ciudad'
+tabla = (
+    df.groupby(
+        ['Centro_Origen', 'Region_Zona', 'Ciudad', 'Canal_L4', 'Segmento_L5']
+    )
+    .agg(
+        Meses_Con_Venta=('Periodo', 'nunique'),
+        Cajas_2025=('Cajas', 'sum'),
+        PNV_2025_CLP=('PNV_CLP', 'sum'),
+    )
+    .reset_index()
+    .rename(columns={'Segmento_L5': 'Cliente'})
+)
 
 # 3. Agrupación por Región / Ciudad con Cajas y PNV
 por_region = (
