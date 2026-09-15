@@ -1,61 +1,100 @@
-/* =========================================================
-   DASHBOARD NESTLÉ CHILE - SCRIPT PRINCIPAL
-   ---------------------------------------------------------
-   Compatible con:
-   - datos_dashboard.json
-   - payload.mensual
-   - KPI animados
-   - Barras animadas
-   - Gráfico mensual SVG
-   - Tooltips
-   - Filtros
-   - Búsqueda
-   - Ordenamiento
-   - Paginación
-   - Top clientes
-   - Insights
-   - Impresión / PDF
-   ========================================================= */
+/* ============================================================
+   NESTLÉ CHILE — DASHBOARD COMERCIAL 2025
+   SCRIPT.JS
+   ============================================================ */
 
 "use strict";
 
-/* =========================================================
-   VARIABLES GLOBALES
-   ========================================================= */
+/* ============================================================
+   ESTADO
+   ============================================================ */
 
 let datos = [];
-let datosMensuales = [];
+let payload = null;
 
 let ordenCol = "PNV_2025_CLP";
 let ordenAsc = false;
 
-let paginaActual = 1;
-const FILAS_POR_PAGINA = 15;
-
-let filtros = {
-    centro: "",
-    region: "",
-    ciudad: "",
-    canal: "",
-    buscar: ""
-};
+let pagina = 1;
+const porPagina = 15;
 
 
-/* =========================================================
-   UTILIDADES
-   ========================================================= */
+/* ============================================================
+   SELECTORES
+   ============================================================ */
 
-function $(id) {
-    return document.getElementById(id);
+const $ = id => document.getElementById(id);
+
+const elCentro = $("f-centro");
+const elRegion = $("f-region");
+const elCiudad = $("f-ciudad");
+const elCanal = $("f-canal");
+const elBuscar = $("f-buscar");
+
+const elCuerpo = $("cuerpo-tabla");
+const elContador = $("contador");
+
+
+/* ============================================================
+   FORMATEADORES
+   ============================================================ */
+
+function numero(valor) {
+    const n = Number(valor);
+    return Number.isFinite(n) ? n : 0;
 }
 
 
-function escapeHTML(valor) {
-    if (valor === null || valor === undefined) {
-        return "";
+function fmt(valor) {
+    return Math.round(numero(valor))
+        .toLocaleString("es-CL");
+}
+
+
+function fmtDecimal(valor) {
+    return numero(valor)
+        .toLocaleString("es-CL", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 1
+        });
+}
+
+
+function fmtCompact(valor) {
+
+    const n = numero(valor);
+
+    if (Math.abs(n) >= 1e9) {
+        return "$" +
+            (n / 1e9).toLocaleString("es-CL", {
+                maximumFractionDigits: 1
+            }) +
+            " mil M";
     }
 
-    return String(valor)
+    if (Math.abs(n) >= 1e6) {
+        return "$" +
+            (n / 1e6).toLocaleString("es-CL", {
+                maximumFractionDigits: 1
+            }) +
+            " M";
+    }
+
+    if (Math.abs(n) >= 1e3) {
+        return "$" +
+            (n / 1e3).toLocaleString("es-CL", {
+                maximumFractionDigits: 1
+            }) +
+            " mil";
+    }
+
+    return "$" + fmt(n);
+}
+
+
+function escapar(valor) {
+
+    return String(valor ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -64,435 +103,176 @@ function escapeHTML(valor) {
 }
 
 
-function numero(valor) {
-    const n = Number(valor);
-
-    if (!Number.isFinite(n)) {
-        return 0;
-    }
-
-    return n;
-}
-
-
-function formatearNumero(valor) {
-    return new Intl.NumberFormat("es-CL").format(numero(valor));
-}
-
-
-function formatearCLP(valor) {
-    return new Intl.NumberFormat("es-CL", {
-        style: "currency",
-        currency: "CLP",
-        maximumFractionDigits: 0
-    }).format(numero(valor));
-}
-
-
-function formatearDecimal(valor) {
-    return new Intl.NumberFormat("es-CL", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 1
-    }).format(numero(valor));
-}
-
-
-/* =========================================================
+/* ============================================================
    ANIMACIÓN DE NÚMEROS
-   ========================================================= */
+   ============================================================ */
 
-function animarNumero(elemento, objetivo, duracion = 1300, formato = "numero") {
+function animarNumero(elemento, destino, duracion = 1200, tipo = "normal") {
 
     if (!elemento) {
         return;
     }
 
-    const inicio = 0;
-    const valorFinal = numero(objetivo);
-    const tiempoInicio = performance.now();
+    const objetivo = numero(destino);
+    const inicio = performance.now();
 
-    function actualizar(tiempoActual) {
+    function frame(ahora) {
 
-        const progreso = Math.min(
-            (tiempoActual - tiempoInicio) / duracion,
-            1
-        );
+        const progreso =
+            Math.min(
+                (ahora - inicio) / duracion,
+                1
+            );
 
         /*
-         * Easing suave:
-         * empieza rápido y termina lentamente.
+         * Easing:
+         * empieza rápido y termina suavemente.
          */
-        const suavizado = 1 - Math.pow(1 - progreso, 3);
+        const easing =
+            1 - Math.pow(1 - progreso, 3);
 
-        const valorActual =
-            inicio + (valorFinal - inicio) * suavizado;
+        const actual =
+            objetivo * easing;
 
-        if (formato === "clp") {
-            elemento.textContent = formatearCLP(valorActual);
-        } else if (formato === "decimal") {
-            elemento.textContent = formatearDecimal(valorActual);
+        if (tipo === "clp") {
+            elemento.textContent =
+                "$" + fmt(actual);
         } else {
-            elemento.textContent = formatearNumero(valorActual);
+            elemento.textContent =
+                fmt(actual);
         }
 
         if (progreso < 1) {
-            requestAnimationFrame(actualizar);
+            requestAnimationFrame(frame);
         }
     }
 
-    requestAnimationFrame(actualizar);
+    requestAnimationFrame(frame);
 }
 
 
-/* =========================================================
-   ANIMACIÓN DE APARICIÓN
-   ========================================================= */
+/* ============================================================
+   ANIMACIÓN DE TARJETAS
+   ============================================================ */
 
-function animarElementos() {
+function animarTarjetas() {
 
-    const elementos = document.querySelectorAll(
-        ".kpi, .panel, .tabla-panel, .insight, .top-clientes, .grafico-panel"
-    );
+    const elementos =
+        document.querySelectorAll(
+            ".kpi-card, .insight-card, .panel"
+        );
 
     elementos.forEach((elemento, indice) => {
 
         elemento.style.opacity = "0";
-        elemento.style.transform = "translateY(18px)";
-        elemento.style.transition =
-            "opacity .55s ease, transform .55s ease";
+        elemento.style.transform =
+            "translateY(15px)";
 
         setTimeout(() => {
+
+            elemento.style.transition =
+                "opacity .55s ease, transform .55s ease";
 
             elemento.style.opacity = "1";
-            elemento.style.transform = "translateY(0)";
+            elemento.style.transform =
+                "translateY(0)";
 
-        }, 100 + indice * 80);
+        }, 80 + indice * 70);
     });
 }
 
 
-/* =========================================================
-   KPI
-   ========================================================= */
+/* ============================================================
+   SELECTS
+   ============================================================ */
 
-function renderizarKPIs(payload) {
+function poblarSelect(elemento, opciones) {
 
-    const kpis = payload.kpis || {};
-
-    const clientes =
-        kpis.clientes ??
-        kpis.total_clientes ??
-        0;
-
-    const centros =
-        kpis.centros ??
-        kpis.total_centros ??
-        0;
-
-    const regiones =
-        kpis.regiones ??
-        kpis.total_regiones ??
-        0;
-
-    const pnv =
-        kpis.pnv ??
-        kpis.PNV_2025_CLP ??
-        kpis.pnv_total ??
-        0;
-
-    animarNumero(
-        $("kpi-clientes"),
-        clientes,
-        1300
-    );
-
-    animarNumero(
-        $("kpi-centros"),
-        centros,
-        1400
-    );
-
-    animarNumero(
-        $("kpi-regiones"),
-        regiones,
-        1500
-    );
-
-    animarNumero(
-        $("kpi-pnv"),
-        pnv,
-        1800,
-        "clp"
-    );
-}
-
-
-/* =========================================================
-   BARRAS
-   ========================================================= */
-
-function renderizarBarras(contenedorId, datosEntrada, etiquetaCampo, valorCampo) {
-
-    const contenedor = $(contenedorId);
-
-    if (!contenedor) {
+    if (!elemento) {
         return;
     }
 
-    contenedor.innerHTML = "";
+    opciones.forEach(valor => {
 
-    if (!Array.isArray(datosEntrada) || datosEntrada.length === 0) {
+        const option =
+            document.createElement("option");
 
-        contenedor.innerHTML = `
-            <div class="sin-datos">
-                No hay datos disponibles.
-            </div>
-        `;
+        option.value = valor;
+        option.textContent = valor;
 
-        return;
-    }
-
-    const valores = datosEntrada.map(item =>
-        numero(item[valorCampo])
-    );
-
-    const maximo = Math.max(...valores, 1);
-
-    datosEntrada.forEach((item, indice) => {
-
-        const etiqueta =
-            item[etiquetaCampo] ??
-            item.Region ??
-            item.Centro_Origen ??
-            item.nombre ??
-            "";
-
-        const valor =
-            numero(item[valorCampo]);
-
-        const porcentaje =
-            Math.max(0, Math.min(100, (valor / maximo) * 100));
-
-        const fila = document.createElement("div");
-
-        fila.className = "barra-fila";
-
-        fila.innerHTML = `
-            <div class="barra-etiqueta"
-                 title="${escapeHTML(etiqueta)}">
-                ${escapeHTML(etiqueta)}
-            </div>
-
-            <div class="barra-pista">
-                <div class="barra-valor"
-                     style="width:0%">
-                </div>
-            </div>
-
-            <div class="barra-numero">
-                ${formatearNumero(valor)}
-            </div>
-        `;
-
-        contenedor.appendChild(fila);
-
-        const barra = fila.querySelector(".barra-valor");
-
-        setTimeout(() => {
-
-            if (barra) {
-                barra.style.transition =
-                    `width ${700 + indice * 70}ms cubic-bezier(.2,.7,.2,1)`;
-
-                barra.style.width = `${porcentaje}%`;
-            }
-
-        }, 100 + indice * 70);
+        elemento.appendChild(option);
     });
 }
 
 
-/* =========================================================
-   NORMALIZAR DATOS DE TABLA
-   ========================================================= */
+/* ============================================================
+   FILTROS
+   ============================================================ */
 
-function normalizarFila(item) {
+function filtroActual() {
 
     return {
-        Centro_Origen:
-            item.Centro_Origen ??
-            item.centro ??
-            "",
 
-        Region_Zona:
-            item.Region_Zona ??
-            item.region ??
-            item.Region ??
-            "",
+        centro:
+            elCentro?.value || "",
 
-        Ciudad:
-            item.Ciudad ??
-            item.ciudad ??
-            "",
+        region:
+            elRegion?.value || "",
 
-        Canal_L4:
-            item.Canal_L4 ??
-            item.canal ??
-            "",
+        ciudad:
+            elCiudad?.value || "",
 
-        Cliente:
-            item.Cliente ??
-            item.Segmento_L5 ??
-            item.cliente ??
-            "",
+        canal:
+            elCanal?.value || "",
 
-        Meses_Con_Venta:
-            numero(
-                item.Meses_Con_Venta ??
-                item.meses ??
-                0
-            ),
-
-        Cajas_2025:
-            numero(
-                item.Cajas_2025 ??
-                item.cajas ??
-                0
-            ),
-
-        PNV_2025_CLP:
-            numero(
-                item.PNV_2025_CLP ??
-                item.pnv ??
-                0
-            )
+        buscar:
+            (elBuscar?.value || "")
+                .toLowerCase()
+                .trim()
     };
 }
 
 
-/* =========================================================
-   OPCIONES DE FILTROS
-   ========================================================= */
+function filtrar() {
 
-function valoresUnicos(campo) {
+    const filtro =
+        filtroActual();
 
-    const valores = datos
-        .map(item => item[campo])
-        .filter(valor =>
-            valor !== null &&
-            valor !== undefined &&
-            String(valor).trim() !== ""
-        )
-        .map(valor => String(valor).trim());
-
-    return [...new Set(valores)].sort((a, b) =>
-        a.localeCompare(b, "es")
-    );
-}
-
-
-function llenarSelect(id, valores, textoInicial) {
-
-    const select = $(id);
-
-    if (!select) {
-        return;
-    }
-
-    select.innerHTML = "";
-
-    const opcionInicial = document.createElement("option");
-
-    opcionInicial.value = "";
-    opcionInicial.textContent = textoInicial;
-
-    select.appendChild(opcionInicial);
-
-    valores.forEach(valor => {
-
-        const opcion =
-            document.createElement("option");
-
-        opcion.value = valor;
-        opcion.textContent = valor;
-
-        select.appendChild(opcion);
-    });
-}
-
-
-function prepararFiltros() {
-
-    llenarSelect(
-        "f-centro",
-        valoresUnicos("Centro_Origen"),
-        "Todos los centros"
-    );
-
-    llenarSelect(
-        "f-region",
-        valoresUnicos("Region_Zona"),
-        "Todas las regiones"
-    );
-
-    llenarSelect(
-        "f-ciudad",
-        valoresUnicos("Ciudad"),
-        "Todas las ciudades"
-    );
-
-    llenarSelect(
-        "f-canal",
-        valoresUnicos("Canal_L4"),
-        "Todos los canales"
-    );
-}
-
-
-/* =========================================================
-   FILTRAR DATOS
-   ========================================================= */
-
-function obtenerDatosFiltrados() {
-
-    return datos.filter(item => {
+    return datos.filter(registro => {
 
         const coincideCentro =
-            !filtros.centro ||
-            String(item.Centro_Origen) === filtros.centro;
+            !filtro.centro ||
+            registro.Centro_Origen === filtro.centro;
 
         const coincideRegion =
-            !filtros.region ||
-            String(item.Region_Zona) === filtros.region;
+            !filtro.region ||
+            registro.Region_Zona === filtro.region;
 
         const coincideCiudad =
-            !filtros.ciudad ||
-            String(item.Ciudad) === filtros.ciudad;
+            !filtro.ciudad ||
+            registro.Ciudad === filtro.ciudad;
 
         const coincideCanal =
-            !filtros.canal ||
-            String(item.Canal_L4) === filtros.canal;
+            !filtro.canal ||
+            registro.Canal_L4 === filtro.canal;
 
         const texto =
-            filtros.buscar.toLowerCase().trim();
+            [
+                registro.Cliente,
+                registro.Canal_L4,
+                registro.Ciudad,
+                registro.Region_Zona,
+                registro.Centro_Origen
+            ]
+                .map(x =>
+                    String(x || "").toLowerCase()
+                );
 
         const coincideBusqueda =
-            !texto ||
-            String(item.Cliente)
-                .toLowerCase()
-                .includes(texto) ||
-            String(item.Centro_Origen)
-                .toLowerCase()
-                .includes(texto) ||
-            String(item.Region_Zona)
-                .toLowerCase()
-                .includes(texto) ||
-            String(item.Ciudad)
-                .toLowerCase()
-                .includes(texto) ||
-            String(item.Canal_L4)
-                .toLowerCase()
-                .includes(texto);
+            !filtro.buscar ||
+            texto.some(x =>
+                x.includes(filtro.buscar)
+            );
 
         return (
             coincideCentro &&
@@ -505,29 +285,899 @@ function obtenerDatosFiltrados() {
 }
 
 
-/* =========================================================
-   ORDENAMIENTO
-   ========================================================= */
+/* ============================================================
+   AGREGACIONES
+   ============================================================ */
 
-function ordenarDatos(lista) {
+function aggregate(filas, campo) {
 
-    return [...lista].sort((a, b) => {
+    const mapa = new Map();
 
-        let valorA = a[ordenCol];
-        let valorB = b[ordenCol];
+    filas.forEach(registro => {
 
-        const numA = Number(valorA);
-        const numB = Number(valorB);
+        const valor =
+            registro[campo] || "Sin información";
+
+        mapa.set(
+            valor,
+            (mapa.get(valor) || 0) + 1
+        );
+    });
+
+    return [...mapa.entries()]
+        .map(([label, value]) => ({
+            label,
+            value
+        }))
+        .sort(
+            (a, b) =>
+                b.value - a.value
+        );
+}
+
+
+/* ============================================================
+   KPI
+   ============================================================ */
+
+function pintarKPIs(filas) {
+
+    const clientes =
+        new Set(
+            filas
+                .map(x => x.Cliente)
+                .filter(Boolean)
+        ).size;
+
+    const centros =
+        new Set(
+            filas
+                .map(x => x.Centro_Origen)
+                .filter(Boolean)
+        ).size;
+
+    const regiones =
+        new Set(
+            filas
+                .map(x => x.Region_Zona)
+                .filter(Boolean)
+        ).size;
+
+    const pnv =
+        filas.reduce(
+            (total, fila) =>
+                total +
+                numero(fila.PNV_2025_CLP),
+            0
+        );
+
+    animarNumero(
+        $("kpi-clientes"),
+        clientes,
+        900
+    );
+
+    animarNumero(
+        $("kpi-centros"),
+        centros,
+        1000
+    );
+
+    animarNumero(
+        $("kpi-regiones"),
+        regiones,
+        1100
+    );
+
+    animarNumero(
+        $("kpi-pnv"),
+        pnv,
+        1400,
+        "clp"
+    );
+
+    if ($("kpi-pnv-foot")) {
+
+        $("kpi-pnv-foot").textContent =
+            filas.length === datos.length
+                ? "CLP · 2025 · total"
+                : "CLP · 2025 · filtrado";
+    }
+
+    if ($("filter-count")) {
+
+        $("filter-count").textContent =
+            filas.length === datos.length
+                ? "Vista completa"
+                : `${fmt(filas.length)} registros filtrados`;
+    }
+}
+
+
+/* ============================================================
+   BARRAS
+   ============================================================ */
+
+function pintarBarras(id, datosBarras, clickFn) {
+
+    const contenedor = $(id);
+
+    if (!contenedor) {
+        return;
+    }
+
+    if (!datosBarras.length) {
+
+        contenedor.innerHTML = `
+            <div class="empty">
+                Sin resultados con los filtros actuales.
+            </div>
+        `;
+
+        return;
+    }
+
+    const top =
+        datosBarras.slice(0, 10);
+
+    const maximo =
+        top[0]?.value || 1;
+
+    contenedor.innerHTML =
+        top.map((item, indice) => {
+
+            const porcentaje =
+                (
+                    item.value /
+                    maximo *
+                    100
+                ).toFixed(1);
+
+            return `
+                <div
+                    class="bar-row"
+                    title="${escapar(item.label)}"
+                    data-indice="${indice}"
+                >
+
+                    <span class="bar-label">
+                        ${escapar(item.label)}
+                    </span>
+
+                    <div class="bar-track">
+
+                        <div
+                            class="bar-fill"
+                            style="--w:${porcentaje}%"
+                        ></div>
+
+                    </div>
+
+                    <span class="bar-num">
+                        ${fmt(item.value)}
+                    </span>
+
+                </div>
+            `;
+
+        }).join("");
+
+    const filas =
+        contenedor.querySelectorAll(
+            ".bar-row"
+        );
+
+    filas.forEach((fila, indice) => {
+
+        fila.addEventListener(
+            "click",
+            () => {
+                clickFn(top[indice].label);
+            }
+        );
+    });
+}
+
+
+/* ============================================================
+   INSIGHTS
+   ============================================================ */
+
+function pintarInsights(filas) {
+
+    const regiones =
+        aggregate(
+            filas,
+            "Region_Zona"
+        );
+
+    const centros =
+        aggregate(
+            filas,
+            "Centro_Origen"
+        );
+
+    if ($("insight-region")) {
+
+        $("insight-region").textContent =
+            regiones[0]?.label || "—";
+    }
+
+    if ($("insight-region-detail")) {
+
+        $("insight-region-detail").textContent =
+            regiones[0]
+                ? `${fmt(regiones[0].value)} clientes / subcuentas`
+                : "Sin datos";
+    }
+
+    if ($("insight-centro")) {
+
+        $("insight-centro").textContent =
+            centros[0]?.label || "—";
+    }
+
+    if ($("insight-centro-detail")) {
+
+        $("insight-centro-detail").textContent =
+            centros[0]
+                ? `${fmt(centros[0].value)} clientes / subcuentas`
+                : "Sin datos";
+    }
+
+    const mensual =
+        Array.isArray(payload?.mensual)
+            ? payload.mensual
+            : [];
+
+    if (
+        mensual.length &&
+        filas.length === datos.length
+    ) {
+
+        const mejorMes =
+            mensual.reduce(
+                (mejor, actual) =>
+                    numero(actual.pnv) >
+                    numero(mejor.pnv)
+                        ? actual
+                        : mejor,
+                mensual[0]
+            );
+
+        if ($("insight-month")) {
+
+            $("insight-month").textContent =
+                mejorMes.mes || "—";
+        }
+
+        if ($("insight-month-detail")) {
+
+            $("insight-month-detail").textContent =
+                mejorMes.pnv
+                    ? `${fmtCompact(mejorMes.pnv)} PNV`
+                    : "Sin datos";
+        }
+
+    } else {
+
+        if ($("insight-month")) {
+            $("insight-month").textContent =
+                "Vista filtrada";
+        }
+
+        if ($("insight-month-detail")) {
+            $("insight-month-detail").textContent =
+                "El histórico mensual corresponde a la vista completa";
+        }
+    }
+}
+
+
+/* ============================================================
+   TOP 10 CLIENTES
+   ============================================================ */
+
+function pintarTopClientes(filas) {
+
+    const contenedor =
+        $("top-clientes");
+
+    if (!contenedor) {
+        return;
+    }
+
+    const mapa = new Map();
+
+    filas.forEach(registro => {
+
+        const cliente =
+            registro.Cliente ||
+            "Sin cliente";
+
+        const actual =
+            mapa.get(cliente) || 0;
+
+        mapa.set(
+            cliente,
+            actual +
+            numero(registro.PNV_2025_CLP)
+        );
+    });
+
+    const ranking =
+        [...mapa.entries()]
+            .map(([Cliente, PNV]) => ({
+                Cliente,
+                PNV
+            }))
+            .sort(
+                (a, b) =>
+                    b.PNV - a.PNV
+            )
+            .slice(0, 10);
+
+    if (!ranking.length) {
+
+        contenedor.innerHTML =
+            `<div class="empty">Sin datos.</div>`;
+
+        return;
+    }
+
+    const maximo =
+        ranking[0].PNV || 1;
+
+    contenedor.innerHTML =
+        ranking.map((item, indice) => {
+
+            const porcentaje =
+                (
+                    item.PNV /
+                    maximo *
+                    100
+                ).toFixed(1);
+
+            return `
+                <div class="top-item">
+
+                    <span class="rank">
+                        ${String(indice + 1).padStart(2, "0")}
+                    </span>
+
+                    <span
+                        class="top-name"
+                        title="${escapar(item.Cliente)}"
+                    >
+                        ${escapar(item.Cliente)}
+                    </span>
+
+                    <span class="top-pnv">
+                        ${fmtCompact(item.PNV)}
+                    </span>
+
+                    <span class="top-track">
+
+                        <i
+                            class="top-bar-animated"
+                            style="--top-width:${porcentaje}%"
+                        ></i>
+
+                    </span>
+
+                </div>
+            `;
+        }).join("");
+
+    /*
+     * Animación de cada cliente.
+     */
+
+    const barras =
+        contenedor.querySelectorAll(
+            ".top-bar-animated"
+        );
+
+    barras.forEach((barra, indice) => {
+
+        barra.style.width = "0%";
+
+        setTimeout(() => {
+
+            barra.style.transition =
+                "width 900ms cubic-bezier(.2,.7,.2,1)";
+
+            barra.style.width =
+                "var(--top-width)";
+
+        }, 100 + indice * 80);
+    });
+}
+
+
+/* ============================================================
+   GRÁFICO MENSUAL
+   ============================================================ */
+
+function pathFor(puntos) {
+
+    return puntos
+        .map(
+            (punto, indice) =>
+                (indice ? "L" : "M") +
+                punto.x.toFixed(1) +
+                " " +
+                punto.y.toFixed(1)
+        )
+        .join(" ");
+}
+
+
+function pintarMensual(filas) {
+
+    const contenedor =
+        $("chart-monthly");
+
+    if (!contenedor) {
+        return;
+    }
+
+    let serie = [];
+
+    /*
+     * Vista completa:
+     * usamos directamente payload.mensual
+     */
+    if (
+        filas.length === datos.length &&
+        Array.isArray(payload?.mensual)
+    ) {
+
+        serie =
+            payload.mensual.map(item => ({
+                label: item.mes,
+                value: numero(item.pnv),
+                cajas: numero(item.cajas),
+                clientes: numero(item.clientes)
+            }));
+
+    } else {
+
+        /*
+         * Con filtros no tenemos histórico mensual
+         * en la tabla maestra.
+         */
+        const total =
+            filas.reduce(
+                (suma, fila) =>
+                    suma +
+                    numero(fila.PNV_2025_CLP),
+                0
+            );
+
+        serie = [
+            {
+                label: "Filtrado",
+                value: total
+            }
+        ];
+    }
+
+    if (serie.length < 2) {
+
+        const valor =
+            serie[0]?.value || 0;
+
+        contenedor.innerHTML = `
+            <div
+                class="empty"
+                style="padding-top:110px"
+            >
+
+                PNV de la vista actual:
+
+                <strong>
+                    ${fmtCompact(valor)}
+                </strong>
+
+                <br>
+
+                <small>
+                    El histórico mensual corresponde
+                    a la vista completa 2025.
+                </small>
+
+            </div>
+        `;
+
+        return;
+    }
+
+    const W = 760;
+    const H = 300;
+
+    const pad = {
+        l: 35,
+        r: 20,
+        t: 25,
+        b: 40
+    };
+
+    const anchoInterno =
+        W -
+        pad.l -
+        pad.r;
+
+    const altoInterno =
+        H -
+        pad.t -
+        pad.b;
+
+    const maximo =
+        Math.max(
+            ...serie.map(
+                item => item.value
+            )
+        ) * 1.08 || 1;
+
+    const puntos =
+        serie.map((item, indice) => {
+
+            const x =
+                pad.l +
+                (
+                    indice /
+                    (serie.length - 1)
+                ) *
+                anchoInterno;
+
+            const y =
+                pad.t +
+                altoInterno -
+                (
+                    item.value /
+                    maximo
+                ) *
+                altoInterno;
+
+            return {
+                x,
+                y
+            };
+        });
+
+    const linea =
+        pathFor(puntos);
+
+    const ultimo =
+        puntos[puntos.length - 1];
+
+    const primero =
+        puntos[0];
+
+    const area =
+        linea +
+        ` L ${ultimo.x} ${H - pad.b}` +
+        ` L ${primero.x} ${H - pad.b}` +
+        " Z";
+
+    const lineasGuia = [0, .25, .5, .75, 1]
+        .map(porcentaje => {
+
+            const y =
+                pad.t +
+                altoInterno *
+                porcentaje;
+
+            return `
+                <line
+                    class="grid-line"
+                    x1="${pad.l}"
+                    x2="${W - pad.r}"
+                    y1="${y}"
+                    y2="${y}"
+                />
+
+                <text
+                    class="axis-label"
+                    x="${pad.l}"
+                    y="${y - 6}"
+                >
+                    ${fmtCompact(
+                        maximo *
+                        (1 - porcentaje)
+                    ).replace("$", "")}
+                </text>
+            `;
+        })
+        .join("");
+
+    const puntosSVG =
+        puntos.map((punto, indice) => {
+
+            const item =
+                serie[indice];
+
+            return `
+                <circle
+                    class="chart-point"
+                    cx="${punto.x}"
+                    cy="${punto.y}"
+                    r="4.5"
+                    data-indice="${indice}"
+                />
+
+                <text
+                    class="axis-label"
+                    text-anchor="middle"
+                    x="${punto.x}"
+                    y="${H - 10}"
+                >
+                    ${escapar(item.label)}
+                </text>
+            `;
+        }).join("");
+
+    contenedor.innerHTML = `
+
+        <svg
+            viewBox="0 0 ${W} ${H}"
+            role="img"
+            aria-label="Evolución mensual del PNV"
+        >
+
+            ${lineasGuia}
+
+            <path
+                class="chart-fill"
+                d="${area}"
+            />
+
+            <path
+                class="chart-line"
+                d="${linea}"
+            />
+
+            ${puntosSVG}
+
+        </svg>
+    `;
+
+    animarGrafico(contenedor);
+
+    prepararTooltipsGrafico(
+        contenedor,
+        serie
+    );
+}
+
+
+/* ============================================================
+   ANIMACIÓN DEL GRÁFICO
+   ============================================================ */
+
+function animarGrafico(contenedor) {
+
+    const linea =
+        contenedor.querySelector(
+            ".chart-line"
+        );
+
+    if (linea) {
+
+        const longitud =
+            linea.getTotalLength();
+
+        linea.style.strokeDasharray =
+            longitud;
+
+        linea.style.strokeDashoffset =
+            longitud;
+
+        /*
+         * Forzamos al navegador a registrar
+         * el estado inicial antes de animar.
+         */
+        linea.getBoundingClientRect();
+
+        linea.style.transition =
+            "stroke-dashoffset 1.7s cubic-bezier(.2,.7,.2,1)";
+
+        linea.style.strokeDashoffset =
+            "0";
+    }
+
+    const puntos =
+        contenedor.querySelectorAll(
+            ".chart-point"
+        );
+
+    puntos.forEach((punto, indice) => {
+
+        punto.style.opacity = "0";
+        punto.style.transform =
+            "scale(.3)";
+        punto.style.transformBox =
+            "fill-box";
+        punto.style.transformOrigin =
+            "center";
+
+        setTimeout(() => {
+
+            punto.style.transition =
+                "opacity .35s ease, transform .35s ease";
+
+            punto.style.opacity = "1";
+            punto.style.transform =
+                "scale(1)";
+
+        }, 500 + indice * 80);
+    });
+}
+
+
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+
+function prepararTooltipsGrafico(
+    contenedor,
+    serie
+) {
+
+    const puntos =
+        contenedor.querySelectorAll(
+            ".chart-point"
+        );
+
+    puntos.forEach(punto => {
+
+        const indice =
+            Number(
+                punto.dataset.indice
+            );
+
+        const dato =
+            serie[indice];
+
+        punto.addEventListener(
+            "mouseenter",
+            evento => {
+
+                mostrarTooltip(
+                    evento,
+                    `
+                        <b>${escapar(dato.label)}</b>
+                        <br>
+                        PNV:
+                        ${fmt(dato.value)}
+                        ${dato.cajas !== undefined
+                            ? `<br>Cajas: ${fmtDecimal(dato.cajas)}`
+                            : ""}
+                        ${dato.clientes !== undefined
+                            ? `<br>Clientes: ${fmt(dato.clientes)}`
+                            : ""}
+                    `
+                );
+            }
+        );
+
+        punto.addEventListener(
+            "mousemove",
+            moverTooltip
+        );
+
+        punto.addEventListener(
+            "mouseleave",
+            ocultarTooltip
+        );
+
+        /*
+         * Click sobre un mes:
+         * mostramos información en consola.
+         */
+        punto.addEventListener(
+            "click",
+            () => {
+
+                console.log(
+                    "[Dashboard] Mes seleccionado:",
+                    dato
+                );
+            }
+        );
+    });
+}
+
+
+function mostrarTooltip(evento, html) {
+
+    const tooltip =
+        $("tooltip");
+
+    if (!tooltip) {
+        return;
+    }
+
+    tooltip.innerHTML =
+        html;
+
+    tooltip.classList.add(
+        "show"
+    );
+
+    moverTooltip(evento);
+}
+
+
+function moverTooltip(evento) {
+
+    const tooltip =
+        $("tooltip");
+
+    if (!tooltip) {
+        return;
+    }
+
+    tooltip.style.left =
+        `${evento.clientX + 14}px`;
+
+    tooltip.style.top =
+        `${evento.clientY + 14}px`;
+}
+
+
+function ocultarTooltip() {
+
+    const tooltip =
+        $("tooltip");
+
+    if (tooltip) {
+
+        tooltip.classList.remove(
+            "show"
+        );
+    }
+}
+
+
+/* ============================================================
+   TABLA
+   ============================================================ */
+
+function ordenarFilas(filas) {
+
+    return filas.sort((a, b) => {
+
+        let valorA =
+            a[ordenCol] ?? "";
+
+        let valorB =
+            b[ordenCol] ?? "";
+
+        const numeroA =
+            Number(valorA);
+
+        const numeroB =
+            Number(valorB);
 
         if (
-            Number.isFinite(numA) &&
-            Number.isFinite(numB)
+            Number.isFinite(numeroA) &&
+            Number.isFinite(numeroB)
         ) {
-            valorA = numA;
-            valorB = numB;
+
+            valorA = numeroA;
+            valorB = numeroB;
+
         } else {
-            valorA = String(valorA ?? "").toLowerCase();
-            valorB = String(valorB ?? "").toLowerCase();
+
+            valorA =
+                String(valorA)
+                    .toLowerCase();
+
+            valorB =
+                String(valorB)
+                    .toLowerCase();
         }
 
         if (valorA < valorB) {
@@ -543,1116 +1193,481 @@ function ordenarDatos(lista) {
 }
 
 
-/* =========================================================
-   TABLA
-   ========================================================= */
+function renderTable() {
 
-function renderizarTabla() {
-
-    const cuerpo = $("cuerpo-tabla");
-
-    if (!cuerpo) {
+    if (!elCuerpo) {
         return;
     }
 
-    const filtrados =
-        ordenarDatos(obtenerDatosFiltrados());
+    let filas =
+        filtrar();
 
-    const total =
-        filtrados.length;
+    filas =
+        ordenarFilas(filas);
 
     const totalPaginas =
         Math.max(
             1,
-            Math.ceil(total / FILAS_POR_PAGINA)
+            Math.ceil(
+                filas.length /
+                porPagina
+            )
         );
 
-    if (paginaActual > totalPaginas) {
-        paginaActual = totalPaginas;
+    if (pagina > totalPaginas) {
+        pagina = totalPaginas;
     }
 
     const inicio =
-        (paginaActual - 1) * FILAS_POR_PAGINA;
+        (pagina - 1) *
+        porPagina;
 
-    const fin =
-        inicio + FILAS_POR_PAGINA;
+    const vista =
+        filas.slice(
+            inicio,
+            inicio + porPagina
+        );
 
-    const pagina =
-        filtrados.slice(inicio, fin);
+    const totalPNV =
+        filas.reduce(
+            (suma, fila) =>
+                suma +
+                numero(fila.PNV_2025_CLP),
+            0
+        );
 
-    cuerpo.innerHTML = "";
+    if (elContador) {
 
-    if (pagina.length === 0) {
+        elContador.textContent =
+            `${fmt(filas.length)} registros · ${fmt(totalPNV)} CLP en la vista`;
+    }
 
-        cuerpo.innerHTML = `
+    if (!vista.length) {
+
+        elCuerpo.innerHTML = `
             <tr>
-                <td colspan="8"
-                    style="text-align:center;padding:30px;">
-                    No se encontraron registros.
+                <td colspan="8">
+                    <div class="empty">
+                        No hay registros para
+                        los filtros seleccionados.
+                    </div>
                 </td>
             </tr>
         `;
 
-        actualizarContador(0, total);
+    } else {
 
-        renderizarPaginacion(0);
+        elCuerpo.innerHTML =
+            vista.map(fila => {
 
-        return;
+                return `
+                    <tr>
+
+                        <td>
+                            ${escapar(fila.Centro_Origen || "—")}
+                        </td>
+
+                        <td>
+                            ${escapar(fila.Region_Zona || "—")}
+                        </td>
+
+                        <td>
+                            ${escapar(fila.Ciudad || "—")}
+                        </td>
+
+                        <td>
+                            ${escapar(fila.Canal_L4 || "—")}
+                        </td>
+
+                        <td>
+                            ${escapar(fila.Cliente || "—")}
+                        </td>
+
+                        <td class="num">
+                            ${fmt(fila.Meses_Con_Venta)}
+                        </td>
+
+                        <td class="num">
+                            ${fmtDecimal(fila.Cajas_2025)}
+                        </td>
+
+                        <td class="num">
+                            ${fmt(fila.PNV_2025_CLP)}
+                        </td>
+
+                    </tr>
+                `;
+
+            }).join("");
     }
 
-    pagina.forEach((item, indice) => {
+    /*
+     * Animación de filas.
+     */
 
-        const fila =
-            document.createElement("tr");
+    const filasDOM =
+        elCuerpo.querySelectorAll(
+            "tr"
+        );
 
-        fila.style.opacity = "0";
-        fila.style.transform = "translateY(8px)";
-        fila.style.transition =
-            "opacity .3s ease, transform .3s ease";
+    filasDOM.forEach(
+        (fila, indice) => {
 
-        fila.innerHTML = `
-            <td>${escapeHTML(item.Centro_Origen)}</td>
+            fila.style.opacity = "0";
+            fila.style.transform =
+                "translateY(7px)";
 
-            <td>${escapeHTML(item.Region_Zona)}</td>
+            setTimeout(() => {
 
-            <td>${escapeHTML(item.Ciudad)}</td>
+                fila.style.transition =
+                    "opacity .25s ease, transform .25s ease";
 
-            <td>${escapeHTML(item.Canal_L4)}</td>
+                fila.style.opacity = "1";
+                fila.style.transform =
+                    "translateY(0)";
 
-            <td>
-                <strong>
-                    ${escapeHTML(item.Cliente)}
-                </strong>
-            </td>
-
-            <td class="num">
-                ${formatearNumero(item.Meses_Con_Venta)}
-            </td>
-
-            <td class="num">
-                ${formatearDecimal(item.Cajas_2025)}
-            </td>
-
-            <td class="num">
-                ${formatearCLP(item.PNV_2025_CLP)}
-            </td>
-        `;
-
-        cuerpo.appendChild(fila);
-
-        setTimeout(() => {
-
-            fila.style.opacity = "1";
-            fila.style.transform = "translateY(0)";
-
-        }, indice * 35);
-    });
-
-    actualizarContador(
-        pagina.length,
-        total,
-        inicio + 1,
-        Math.min(fin, total)
+            }, indice * 25);
+        }
     );
 
-    renderizarPaginacion(totalPaginas);
+    if ($("page-info")) {
+
+        $("page-info").textContent =
+            `Página ${pagina} de ${totalPaginas}`;
+    }
+
+    if ($("prev-page")) {
+
+        $("prev-page").disabled =
+            pagina <= 1;
+    }
+
+    if ($("next-page")) {
+
+        $("next-page").disabled =
+            pagina >= totalPaginas;
+    }
 }
 
 
-function actualizarContador(mostrados, total, desde, hasta) {
+/* ============================================================
+   RENDER PRINCIPAL
+   ============================================================ */
 
-    const contador = $("contador");
+function render() {
 
-    if (!contador) {
-        return;
-    }
+    const filas =
+        filtrar();
 
-    if (total === 0) {
+    pintarKPIs(filas);
 
-        contador.textContent =
-            "0 clientes encontrados.";
+    pintarInsights(filas);
 
-        return;
-    }
+    pintarMensual(filas);
 
-    contador.textContent =
-        `Mostrando ${desde}–${hasta} de ${formatearNumero(total)} clientes`;
-}
+    pintarBarras(
+        "barras-region",
+        aggregate(
+            filas,
+            "Region_Zona"
+        ),
+        valor => {
 
-
-/* =========================================================
-   PAGINACIÓN
-   ========================================================= */
-
-function renderizarPaginacion(totalPaginas) {
-
-    let contenedor =
-        $("paginacion");
-
-    if (!contenedor) {
-        return;
-    }
-
-    contenedor.innerHTML = "";
-
-    if (totalPaginas <= 1) {
-        return;
-    }
-
-    const botonAnterior =
-        document.createElement("button");
-
-    botonAnterior.textContent = "‹";
-
-    botonAnterior.disabled =
-        paginaActual === 1;
-
-    botonAnterior.onclick = () => {
-
-        if (paginaActual > 1) {
-
-            paginaActual--;
-
-            renderizarTabla();
-
-            window.scrollTo({
-                top: document.querySelector(".tabla-panel")?.offsetTop || 0,
-                behavior: "smooth"
-            });
-        }
-    };
-
-    contenedor.appendChild(botonAnterior);
-
-    const maxBotones = 7;
-
-    let inicio =
-        Math.max(1, paginaActual - 3);
-
-    let fin =
-        Math.min(
-            totalPaginas,
-            inicio + maxBotones - 1
-        );
-
-    if (fin - inicio < maxBotones - 1) {
-
-        inicio =
-            Math.max(
-                1,
-                fin - maxBotones + 1
-            );
-    }
-
-    for (let i = inicio; i <= fin; i++) {
-
-        const boton =
-            document.createElement("button");
-
-        boton.textContent = i;
-
-        if (i === paginaActual) {
-            boton.classList.add("activo");
-        }
-
-        boton.onclick = () => {
-
-            paginaActual = i;
-
-            renderizarTabla();
-        };
-
-        contenedor.appendChild(boton);
-    }
-
-    const botonSiguiente =
-        document.createElement("button");
-
-    botonSiguiente.textContent = "›";
-
-    botonSiguiente.disabled =
-        paginaActual === totalPaginas;
-
-    botonSiguiente.onclick = () => {
-
-        if (paginaActual < totalPaginas) {
-
-            paginaActual++;
-
-            renderizarTabla();
-        }
-    };
-
-    contenedor.appendChild(botonSiguiente);
-}
-
-
-/* =========================================================
-   ORDENAMIENTO DE COLUMNAS
-   ========================================================= */
-
-function prepararOrdenamiento() {
-
-    const encabezados =
-        document.querySelectorAll(
-            "th[data-col]"
-        );
-
-    encabezados.forEach(th => {
-
-        th.addEventListener("click", () => {
-
-            const columna =
-                th.dataset.col;
-
-            if (!columna) {
-                return;
+            if (elRegion) {
+                elRegion.value = valor;
             }
 
-            if (ordenCol === columna) {
-                ordenAsc = !ordenAsc;
-            } else {
-                ordenCol = columna;
-                ordenAsc = true;
+            pagina = 1;
+
+            render();
+        }
+    );
+
+    pintarBarras(
+        "barras-centro",
+        aggregate(
+            filas,
+            "Centro_Origen"
+        ),
+        valor => {
+
+            if (elCentro) {
+                elCentro.value = valor;
             }
 
-            paginaActual = 1;
+            pagina = 1;
 
-            actualizarIndicadoresOrden();
+            render();
+        }
+    );
 
-            renderizarTabla();
-        });
-    });
+    pintarTopClientes(filas);
+
+    renderTable();
 }
 
 
-function actualizarIndicadoresOrden() {
-
-    document
-        .querySelectorAll("th[data-col]")
-        .forEach(th => {
-
-            const columna =
-                th.dataset.col;
-
-            const textoBase =
-                th.dataset.textoOriginal ||
-                th.textContent
-                    .replace(/[▲▼]/g, "")
-                    .trim();
-
-            th.dataset.textoOriginal =
-                textoBase;
-
-            if (columna === ordenCol) {
-
-                th.textContent =
-                    `${textoBase} ${ordenAsc ? "▲" : "▼"}`;
-
-            } else {
-
-                th.textContent =
-                    textoBase;
-            }
-        });
-}
-
-
-/* =========================================================
-   EVENTOS DE FILTROS
-   ========================================================= */
-
-function prepararEventosFiltros() {
-
-    const centro = $("f-centro");
-    const region = $("f-region");
-    const ciudad = $("f-ciudad");
-    const canal = $("f-canal");
-    const buscar = $("f-buscar");
-
-    if (centro) {
-
-        centro.addEventListener("change", e => {
-
-            filtros.centro =
-                e.target.value;
-
-            paginaActual = 1;
-
-            renderizarTabla();
-        });
-    }
-
-    if (region) {
-
-        region.addEventListener("change", e => {
-
-            filtros.region =
-                e.target.value;
-
-            paginaActual = 1;
-
-            renderizarTabla();
-        });
-    }
-
-    if (ciudad) {
-
-        ciudad.addEventListener("change", e => {
-
-            filtros.ciudad =
-                e.target.value;
-
-            paginaActual = 1;
-
-            renderizarTabla();
-        });
-    }
-
-    if (canal) {
-
-        canal.addEventListener("change", e => {
-
-            filtros.canal =
-                e.target.value;
-
-            paginaActual = 1;
-
-            renderizarTabla();
-        });
-    }
-
-    if (buscar) {
-
-        buscar.addEventListener("input", e => {
-
-            filtros.buscar =
-                e.target.value;
-
-            paginaActual = 1;
-
-            renderizarTabla();
-        });
-    }
-}
-
-
-/* =========================================================
+/* ============================================================
    RESET
-   ========================================================= */
+   ============================================================ */
 
-function resetearFiltros() {
+function reset() {
 
-    filtros = {
-        centro: "",
-        region: "",
-        ciudad: "",
-        canal: "",
-        buscar: ""
-    };
-
-    const ids = [
-        "f-centro",
-        "f-region",
-        "f-ciudad",
-        "f-canal"
-    ];
-
-    ids.forEach(id => {
-
-        const elemento = $(id);
-
-        if (elemento) {
-            elemento.value = "";
-        }
-    });
-
-    const buscar = $("f-buscar");
-
-    if (buscar) {
-        buscar.value = "";
+    if (elCentro) {
+        elCentro.value = "";
     }
 
-    paginaActual = 1;
+    if (elRegion) {
+        elRegion.value = "";
+    }
 
-    renderizarTabla();
+    if (elCiudad) {
+        elCiudad.value = "";
+    }
+
+    if (elCanal) {
+        elCanal.value = "";
+    }
+
+    if (elBuscar) {
+        elBuscar.value = "";
+    }
+
+    pagina = 1;
+
+    ordenCol =
+        "PNV_2025_CLP";
+
+    ordenAsc = false;
+
+    render();
 }
 
 
-/* =========================================================
-   GRÁFICO MENSUAL SVG
-   ========================================================= */
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
 
-function renderizarGraficoMensual(payload) {
-
-    const contenedor =
-        $("grafico-mensual") ||
-        $("graficoMensual") ||
-        $("chart-mensual");
-
-    if (!contenedor) {
-        return;
-    }
+function init() {
 
     /*
-     * IMPORTANTE:
-     * El JSON real utiliza "mensual".
+     * Cargar opciones.
      */
-    datosMensuales =
-        Array.isArray(payload.mensual)
-            ? payload.mensual
-            : [];
 
-    contenedor.innerHTML = "";
+    poblarSelect(
+        elCentro,
+        payload?.opciones?.centros || []
+    );
 
-    if (datosMensuales.length === 0) {
+    poblarSelect(
+        elRegion,
+        payload?.opciones?.regiones || []
+    );
 
-        contenedor.innerHTML = `
-            <div class="sin-datos">
-                <strong>No hay datos mensuales disponibles.</strong>
-                <br>
-                Verifica que el JSON contenga la propiedad
-                <code>mensual</code>.
-            </div>
-        `;
+    poblarSelect(
+        elCiudad,
+        payload?.opciones?.ciudades || []
+    );
 
-        return;
-    }
+    poblarSelect(
+        elCanal,
+        payload?.opciones?.canales || []
+    );
 
-    const datos = [...datosMensuales]
-        .sort((a, b) =>
-            numero(a.mes_num) -
-            numero(b.mes_num)
-        );
-
-    const ancho = 900;
-    const alto = 330;
-
-    const margen = {
-        arriba: 35,
-        derecha: 35,
-        abajo: 55,
-        izquierda: 75
-    };
-
-    const anchoUtil =
-        ancho -
-        margen.izquierda -
-        margen.derecha;
-
-    const altoUtil =
-        alto -
-        margen.arriba -
-        margen.abajo;
-
-    const maximo =
-        Math.max(
-            ...datos.map(d => numero(d.pnv)),
-            1
-        );
-
-    const minimo = 0;
-
-    const puntos =
-        datos.map((dato, indice) => {
-
-            const x =
-                margen.izquierda +
-                (
-                    indice /
-                    Math.max(datos.length - 1, 1)
-                ) *
-                anchoUtil;
-
-            const y =
-                margen.arriba +
-                altoUtil -
-                (
-                    (
-                        numero(dato.pnv) -
-                        minimo
-                    ) /
-                    (
-                        maximo -
-                        minimo || 1
-                    )
-                ) *
-                altoUtil;
-
-            return {
-                x,
-                y,
-                dato
-            };
-        });
-
-    const polyline =
-        puntos
-            .map(p => `${p.x},${p.y}`)
-            .join(" ");
-
-    const areaPoints =
-        [
-            `${puntos[0].x},${margen.arriba + altoUtil}`,
-            polyline,
-            `${puntos[puntos.length - 1].x},${margen.arriba + altoUtil}`
-        ].join(" ");
-
-    let svg = `
-        <div class="grafico-contenedor">
-            <svg
-                viewBox="0 0 ${ancho} ${alto}"
-                preserveAspectRatio="none"
-                class="grafico-svg"
-                role="img"
-                aria-label="Evolución mensual del PNV 2025"
-            >
-
-                <defs>
-
-                    <linearGradient
-                        id="gradientePNV"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                    >
-                        <stop
-                            offset="0%"
-                            stop-opacity=".22"
-                        />
-
-                        <stop
-                            offset="100%"
-                            stop-opacity="0"
-                        />
-                    </linearGradient>
-
-                </defs>
-    `;
 
     /*
-     * Líneas horizontales
+     * Eventos de filtros.
      */
 
-    const lineas = 5;
+    [
+        elCentro,
+        elRegion,
+        elCiudad,
+        elCanal
+    ].forEach(elemento => {
 
-    for (let i = 0; i <= lineas; i++) {
-
-        const porcentaje =
-            i / lineas;
-
-        const y =
-            margen.arriba +
-            altoUtil * porcentaje;
-
-        const valor =
-            maximo * (1 - porcentaje);
-
-        svg += `
-            <line
-                x1="${margen.izquierda}"
-                y1="${y}"
-                x2="${ancho - margen.derecha}"
-                y2="${y}"
-                class="linea-guia"
-            />
-
-            <text
-                x="${margen.izquierda - 10}"
-                y="${y + 4}"
-                text-anchor="end"
-                class="etiqueta-eje"
-            >
-                ${formatearCLP(valor)}
-            </text>
-        `;
-    }
-
-    /*
-     * Área
-     */
-
-    svg += `
-        <polygon
-            points="${areaPoints}"
-            class="area-grafico"
-        />
-
-        <polyline
-            points="${polyline}"
-            class="linea-grafico"
-        />
-    `;
-
-    /*
-     * Puntos
-     */
-
-    puntos.forEach((punto, indice) => {
-
-        const dato =
-            punto.dato;
-
-        svg += `
-            <g class="punto-grafico">
-
-                <circle
-                    cx="${punto.x}"
-                    cy="${punto.y}"
-                    r="5"
-                    class="punto"
-                    data-indice="${indice}"
-                />
-
-                <text
-                    x="${punto.x}"
-                    y="${alto - 20}"
-                    text-anchor="middle"
-                    class="etiqueta-mes"
-                >
-                    ${escapeHTML(dato.mes)}
-                </text>
-
-            </g>
-        `;
-    });
-
-    svg += `
-            </svg>
-
-            <div
-                id="tooltip-mensual"
-                class="tooltip-mensual"
-            ></div>
-        </div>
-    `;
-
-    contenedor.innerHTML = svg;
-
-    /*
-     * Animación de línea
-     */
-
-    const linea =
-        contenedor.querySelector(
-            ".linea-grafico"
-        );
-
-    if (linea) {
-
-        const longitud =
-            linea.getTotalLength();
-
-        linea.style.strokeDasharray =
-            longitud;
-
-        linea.style.strokeDashoffset =
-            longitud;
-
-        linea.getBoundingClientRect();
-
-        linea.style.transition =
-            "stroke-dashoffset 1.6s cubic-bezier(.2,.7,.2,1)";
-
-        linea.style.strokeDashoffset = "0";
-    }
-
-    /*
-     * Animación de puntos
-     */
-
-    const puntosDOM =
-        contenedor.querySelectorAll(
-            ".punto"
-        );
-
-    puntosDOM.forEach((punto, indice) => {
-
-        punto.style.opacity = "0";
-        punto.style.transformOrigin =
-            `${punto.getAttribute("cx")}px ${punto.getAttribute("cy")}px`;
-        punto.style.transform =
-            "scale(.3)";
-
-        setTimeout(() => {
-
-            punto.style.transition =
-                "opacity .35s ease, transform .35s ease";
-
-            punto.style.opacity = "1";
-            punto.style.transform =
-                "scale(1)";
-
-        }, 500 + indice * 100);
-
-    });
-
-    prepararTooltipsMensuales(datos);
-}
-
-
-/* =========================================================
-   TOOLTIPS DEL GRÁFICO
-   ========================================================= */
-
-function prepararTooltipsMensuales(datos) {
-
-    const puntos =
-        document.querySelectorAll(
-            ".punto-grafico"
-        );
-
-    const tooltip =
-        $("tooltip-mensual");
-
-    if (!tooltip) {
-        return;
-    }
-
-    puntos.forEach((grupo, indice) => {
-
-        const dato =
-            datos[indice];
-
-        if (!dato) {
+        if (!elemento) {
             return;
         }
 
-        grupo.addEventListener("mouseenter", () => {
-
-            tooltip.innerHTML = `
-                <div class="tooltip-titulo">
-                    ${escapeHTML(dato.mes)}
-                </div>
-
-                <div>
-                    <strong>PNV:</strong>
-                    ${formatearCLP(dato.pnv)}
-                </div>
-
-                <div>
-                    <strong>Cajas:</strong>
-                    ${formatearDecimal(dato.cajas)}
-                </div>
-
-                <div>
-                    <strong>Clientes:</strong>
-                    ${formatearNumero(dato.clientes)}
-                </div>
-            `;
-
-            tooltip.classList.add("visible");
-        });
-
-        grupo.addEventListener("mousemove", event => {
-
-            const rect =
-                tooltip.parentElement.getBoundingClientRect();
-
-            let left =
-                event.clientX -
-                rect.left +
-                14;
-
-            let top =
-                event.clientY -
-                rect.top -
-                20;
-
-            const anchoTooltip =
-                tooltip.offsetWidth;
-
-            if (
-                left + anchoTooltip >
-                rect.width - 10
-            ) {
-                left =
-                    left -
-                    anchoTooltip -
-                    28;
-            }
-
-            tooltip.style.left =
-                `${left}px`;
-
-            tooltip.style.top =
-                `${top}px`;
-        });
-
-        grupo.addEventListener("mouseleave", () => {
-
-            tooltip.classList.remove(
-                "visible"
-            );
-        });
-    });
-}
-
-
-/* =========================================================
-   TOP CLIENTES
-   ========================================================= */
-
-function renderizarTopClientes() {
-
-    const contenedor =
-        $("top-clientes");
-
-    if (!contenedor) {
-        return;
-    }
-
-    const top =
-        [...datos]
-            .sort(
-                (a, b) =>
-                    numero(b.PNV_2025_CLP) -
-                    numero(a.PNV_2025_CLP)
-            )
-            .slice(0, 10);
-
-    if (top.length === 0) {
-
-        contenedor.innerHTML =
-            "<p>No hay datos.</p>";
-
-        return;
-    }
-
-    contenedor.innerHTML = "";
-
-    top.forEach((item, indice) => {
-
-        const fila =
-            document.createElement("div");
-
-        fila.className =
-            "top-cliente-fila";
-
-        fila.innerHTML = `
-            <div class="top-posicion">
-                ${indice + 1}
-            </div>
-
-            <div class="top-info">
-
-                <div class="top-nombre">
-                    ${escapeHTML(item.Cliente)}
-                </div>
-
-                <div class="top-subtexto">
-                    ${escapeHTML(item.Region_Zona)}
-                </div>
-
-            </div>
-
-            <div class="top-valor">
-                ${formatearCLP(item.PNV_2025_CLP)}
-            </div>
-        `;
-
-        contenedor.appendChild(fila);
-
-        fila.style.opacity = "0";
-        fila.style.transform =
-            "translateX(-12px)";
-
-        setTimeout(() => {
-
-            fila.style.transition =
-                "opacity .4s ease, transform .4s ease";
-
-            fila.style.opacity = "1";
-            fila.style.transform =
-                "translateX(0)";
-
-        }, indice * 70);
-    });
-}
-
-
-/* =========================================================
-   INSIGHTS
-   ========================================================= */
-
-function renderizarInsights(payload) {
-
-    const contenedor =
-        $("insights");
-
-    if (!contenedor) {
-        return;
-    }
-
-    const mensual =
-        Array.isArray(payload.mensual)
-            ? payload.mensual
-            : [];
-
-    if (mensual.length === 0) {
-        return;
-    }
-
-    const ordenado =
-        [...mensual]
-            .sort(
-                (a, b) =>
-                    numero(b.pnv) -
-                    numero(a.pnv)
-            );
-
-    const mejorMes =
-        ordenado[0];
-
-    const peorMes =
-        ordenado[ordenado.length - 1];
-
-    const totalPNV =
-        mensual.reduce(
-            (total, item) =>
-                total + numero(item.pnv),
-            0
-        );
-
-    const promedio =
-        totalPNV /
-        mensual.length;
-
-    contenedor.innerHTML = `
-        <div class="insight">
-
-            <div class="insight-icon">
-                ↗
-            </div>
-
-            <div>
-
-                <strong>
-                    Mejor mes
-                </strong>
-
-                <p>
-                    ${escapeHTML(mejorMes.mes)}
-                    registró
-                    ${formatearCLP(mejorMes.pnv)}
-                    de PNV.
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="insight">
-
-            <div class="insight-icon">
-                ◉
-            </div>
-
-            <div>
-
-                <strong>
-                    Promedio mensual
-                </strong>
-
-                <p>
-                    ${formatearCLP(promedio)}
-                    de PNV promedio.
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="insight">
-
-            <div class="insight-icon">
-                ↓
-            </div>
-
-            <div>
-
-                <strong>
-                    Menor mes
-                </strong>
-
-                <p>
-                    ${escapeHTML(peorMes.mes)}
-                    registró
-                    ${formatearCLP(peorMes.pnv)}.
-                </p>
-
-            </div>
-
-        </div>
-    `;
-}
-
-
-/* =========================================================
-   BOTÓN DE RESET
-   ========================================================= */
-
-function prepararBotonReset() {
-
-    const botones =
-        document.querySelectorAll(
-            "#btn-reset, #reset-filtros, .btn-reset"
-        );
-
-    botones.forEach(boton => {
-
-        boton.addEventListener(
-            "click",
-            resetearFiltros
-        );
-    });
-}
-
-
-/* =========================================================
-   IMPRESIÓN / PDF
-   ========================================================= */
-
-function prepararImpresion() {
-
-    const botones =
-        document.querySelectorAll(
-            "#btn-imprimir, #btn-pdf, .btn-imprimir"
-        );
-
-    botones.forEach(boton => {
-
-        boton.addEventListener(
-            "click",
+        elemento.addEventListener(
+            "change",
             () => {
 
+                pagina = 1;
+
+                render();
+            }
+        );
+    });
+
+
+    /*
+     * Buscador.
+     */
+
+    if (elBuscar) {
+
+        elBuscar.addEventListener(
+            "input",
+            () => {
+
+                pagina = 1;
+
+                render();
+            }
+        );
+    }
+
+
+    /*
+     * Restablecer.
+     */
+
+    if ($("btn-reset")) {
+
+        $("btn-reset").addEventListener(
+            "click",
+            reset
+        );
+    }
+
+
+    /*
+     * PDF.
+     */
+
+    if ($("btn-pdf")) {
+
+        $("btn-pdf").addEventListener(
+            "click",
+            () => {
                 window.print();
             }
         );
-    });
+    }
+
+
+    /*
+     * Paginación.
+     */
+
+    if ($("prev-page")) {
+
+        $("prev-page").addEventListener(
+            "click",
+            () => {
+
+                if (pagina > 1) {
+                    pagina--;
+                    render();
+                }
+            }
+        );
+    }
+
+
+    if ($("next-page")) {
+
+        $("next-page").addEventListener(
+            "click",
+            () => {
+
+                pagina++;
+                render();
+            }
+        );
+    }
+
+
+    /*
+     * Ordenamiento.
+     */
+
+    document
+        .querySelectorAll(
+            "th[data-col]"
+        )
+        .forEach(th => {
+
+            th.addEventListener(
+                "click",
+                () => {
+
+                    const columna =
+                        th.dataset.col;
+
+                    if (
+                        ordenCol === columna
+                    ) {
+
+                        ordenAsc =
+                            !ordenAsc;
+
+                    } else {
+
+                        ordenCol =
+                            columna;
+
+                        ordenAsc = true;
+                    }
+
+                    pagina = 1;
+
+                    render();
+                }
+            );
+        });
+
+
+    /*
+     * Primer render.
+     */
+
+    render();
+
+
+    /*
+     * Animación general.
+     */
+
+    setTimeout(
+        animarTarjetas,
+        50
+    );
 }
 
 
-/* =========================================================
-   CARGAR DATOS
-   ========================================================= */
+/* ============================================================
+   CARGA DEL JSON
+   ============================================================ */
 
-async function cargarDatos() {
+console.log(
+    "========================================"
+);
 
-    try {
+console.log(
+    " NESTLÉ CHILE — DASHBOARD 2025"
+);
 
-        console.log(
-            "[Dashboard] Cargando datos..."
-        );
+console.log(
+    " Cargando datos..."
+);
 
-        const respuesta =
-            await fetch(
-                `datos_dashboard.json?v=${Date.now()}`,
-                {
-                    cache: "no-store"
-                }
-            );
+console.log(
+    "========================================"
+);
+
+
+fetch(
+    "datos_dashboard.json?v=" +
+    Date.now(),
+    {
+        cache: "no-store"
+    }
+)
+
+    .then(respuesta => {
 
         if (!respuesta.ok) {
 
@@ -1661,263 +1676,64 @@ async function cargarDatos() {
             );
         }
 
-        const payload =
-            await respuesta.json();
+        return respuesta.json();
+    })
+
+    .then(json => {
 
         console.log(
-            "[Dashboard] JSON cargado:",
-            payload
+            "[OK] datos_dashboard.json cargado."
         );
 
-        /*
-         * ---------------------------------------------
-         * TABLA
-         * ---------------------------------------------
-         */
+        console.log(
+            "[INFO] Registros:",
+            json.tabla?.length || 0
+        );
+
+        console.log(
+            "[INFO] Meses:",
+            json.mensual?.length || 0
+        );
+
+        payload = json;
 
         datos =
-            Array.isArray(payload.tabla)
-                ? payload.tabla.map(normalizarFila)
+            Array.isArray(json.tabla)
+                ? json.tabla
                 : [];
 
-        /*
-         * ---------------------------------------------
-         * DATOS MENSUALES
-         * ---------------------------------------------
-         */
+        init();
+    })
 
-        datosMensuales =
-            Array.isArray(payload.mensual)
-                ? payload.mensual
-                : [];
-
-        console.log(
-            `[Dashboard] Clientes: ${datos.length}`
-        );
-
-        console.log(
-            `[Dashboard] Meses: ${datosMensuales.length}`
-        );
-
-        /*
-         * ---------------------------------------------
-         * KPI
-         * ---------------------------------------------
-         */
-
-        renderizarKPIs(payload);
-
-        /*
-         * ---------------------------------------------
-         * BARRAS
-         * ---------------------------------------------
-         */
-
-        const regiones =
-            Array.isArray(payload.por_region)
-                ? payload.por_region
-                : [];
-
-        const centros =
-            Array.isArray(payload.por_centro)
-                ? payload.por_centro
-                : [];
-
-        /*
-         * Intentamos detectar automáticamente
-         * los nombres de los campos.
-         */
-
-        const campoRegion =
-            regiones.length
-                ? (
-                    "Region" in regiones[0]
-                        ? "Region"
-                        : "Region_Zona"
-                )
-                : "Region";
-
-        const campoValorRegion =
-            regiones.length
-                ? (
-                    "Clientes" in regiones[0]
-                        ? "Clientes"
-                        : "clientes"
-                )
-                : "Clientes";
-
-        const campoCentro =
-            centros.length
-                ? (
-                    "Centro_Origen" in centros[0]
-                        ? "Centro_Origen"
-                        : "Centro"
-                )
-                : "Centro_Origen";
-
-        const campoValorCentro =
-            centros.length
-                ? (
-                    "Clientes" in centros[0]
-                        ? "Clientes"
-                        : "clientes"
-                )
-                : "Clientes";
-
-        renderizarBarras(
-            "barras-region",
-            regiones,
-            campoRegion,
-            campoValorRegion
-        );
-
-        renderizarBarras(
-            "barras-centro",
-            centros,
-            campoCentro,
-            campoValorCentro
-        );
-
-        /*
-         * ---------------------------------------------
-         * FILTROS
-         * ---------------------------------------------
-         */
-
-        prepararFiltros();
-
-        prepararEventosFiltros();
-
-        prepararOrdenamiento();
-
-        prepararBotonReset();
-
-        prepararImpresion();
-
-        /*
-         * ---------------------------------------------
-         * TABLA
-         * ---------------------------------------------
-         */
-
-        renderizarTabla();
-
-        /*
-         * ---------------------------------------------
-         * TOP CLIENTES
-         * ---------------------------------------------
-         */
-
-        renderizarTopClientes();
-
-        /*
-         * ---------------------------------------------
-         * INSIGHTS
-         * ---------------------------------------------
-         */
-
-        renderizarInsights(payload);
-
-        /*
-         * ---------------------------------------------
-         * GRÁFICO MENSUAL
-         * ---------------------------------------------
-         */
-
-        renderizarGraficoMensual(payload);
-
-        /*
-         * ---------------------------------------------
-         * ANIMACIONES GENERALES
-         * ---------------------------------------------
-         */
-
-        setTimeout(() => {
-
-            animarElementos();
-
-        }, 100);
-
-        console.log(
-            "[Dashboard] ✓ Dashboard cargado correctamente."
-        );
-
-    } catch (error) {
+    .catch(error => {
 
         console.error(
-            "[Dashboard] Error:",
+            "[ERROR] Dashboard:",
             error
         );
 
-        mostrarError(
-            error.message
-        );
-    }
-}
+        if (elContador) {
 
-
-/* =========================================================
-   ERROR
-   ========================================================= */
-
-function mostrarError(mensaje) {
-
-    const elementos = [
-        $("barras-region"),
-        $("barras-centro"),
-        $("cuerpo-tabla"),
-        $("grafico-mensual"),
-        $("graficoMensual"),
-        $("chart-mensual")
-    ];
-
-    elementos.forEach(elemento => {
-
-        if (!elemento) {
-            return;
+            elContador.textContent =
+                "Error cargando datos_dashboard.json: " +
+                error.message;
         }
 
-        elemento.innerHTML = `
-            <div class="error-dashboard">
+        /*
+         * Mostrar también el error en el gráfico
+         * para que sea visible.
+         */
 
-                <strong>
-                    No se pudieron cargar los datos.
-                </strong>
+        if ($("chart-monthly")) {
 
-                <br><br>
-
-                ${escapeHTML(mensaje)}
-
-            </div>
-        `;
+            $("chart-monthly").innerHTML = `
+                <div class="empty">
+                    <strong>
+                        Error cargando el dashboard
+                    </strong>
+                    <br><br>
+                    ${escapar(error.message)}
+                </div>
+            `;
+        }
     });
-}
-
-
-/* =========================================================
-   INICIO
-   ========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        console.log(
-            "================================="
-        );
-
-        console.log(
-            " Nestlé Chile Dashboard"
-        );
-
-        console.log(
-            " Iniciando..."
-        );
-
-        console.log(
-            "================================="
-        );
-
-        cargarDatos();
-    }
-);
