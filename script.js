@@ -1,1739 +1,3323 @@
-/* ============================================================
+/* =========================================================
    NESTLÉ CHILE — DASHBOARD COMERCIAL 2025
-   SCRIPT.JS
-   ============================================================ */
+   SCRIPT V2
+   Compatible con index.html + style.css V2
+========================================================= */
 
 "use strict";
 
-/* ============================================================
-   ESTADO
-   ============================================================ */
 
-let datos = [];
+/* =========================================================
+   CONFIGURACIÓN
+========================================================= */
+
+const CONFIG = {
+
+    JSON_URL: "datos_dashboard.json",
+
+    FILAS_POR_PAGINA: 10,
+
+    DURACION_KPI: 900,
+
+    DURACION_BARRAS: 750
+
+};
+
+
+/* =========================================================
+   ESTADO GLOBAL
+========================================================= */
+
 let payload = null;
 
-let ordenCol = "PNV_2025_CLP";
-let ordenAsc = false;
+let datosOriginales = [];
 
-let pagina = 1;
-const porPagina = 15;
+let datosFiltrados = [];
 
+let paginaActual = 1;
 
-/* ============================================================
-   SELECTORES
-   ============================================================ */
+let ordenActual = {
 
-const $ = id => document.getElementById(id);
+    columna: null,
 
-const elCentro = $("f-centro");
-const elRegion = $("f-region");
-const elCiudad = $("f-ciudad");
-const elCanal = $("f-canal");
-const elBuscar = $("f-buscar");
+    direccion: 1
 
-const elCuerpo = $("cuerpo-tabla");
-const elContador = $("contador");
+};
 
+let filtros = {
 
-/* ============================================================
-   FORMATEADORES
-   ============================================================ */
+    centro: "",
 
-function numero(valor) {
-    const n = Number(valor);
-    return Number.isFinite(n) ? n : 0;
-}
+    region: "",
+
+    ciudad: "",
+
+    canal: "",
+
+    buscar: ""
+
+};
 
 
-function fmt(valor) {
-    return Math.round(numero(valor))
-        .toLocaleString("es-CL");
-}
+/* =========================================================
+   ELEMENTOS DOM
+========================================================= */
+
+const $ = (selector) => document.querySelector(selector);
+
+const $$ = (selector) => document.querySelectorAll(selector);
 
 
-function fmtDecimal(valor) {
-    return numero(valor)
-        .toLocaleString("es-CL", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 1
-        });
-}
+const DOM = {
+
+    centro: $("#f-centro"),
+
+    region: $("#f-region"),
+
+    ciudad: $("#f-ciudad"),
+
+    canal: $("#f-canal"),
+
+    buscar: $("#f-buscar"),
+
+    filterCount: $("#filter-count"),
+
+    kpiPNV: $("#kpi-pnv"),
+
+    kpiClientes: $("#kpi-clientes"),
+
+    kpiCentros: $("#kpi-centros"),
+
+    kpiRegiones: $("#kpi-regiones"),
+
+    kpiPNVFoot: $("#kpi-pnv-foot"),
+
+    insightRegion: $("#insight-region"),
+
+    insightRegionDetail: $("#insight-region-detail"),
+
+    insightCentro: $("#insight-centro"),
+
+    insightCentroDetail: $("#insight-centro-detail"),
+
+    insightMonth: $("#insight-month"),
+
+    insightMonthDetail: $("#insight-month-detail"),
+
+    chartMonthly: $("#chart-monthly"),
+
+    barrasRegion: $("#barras-region"),
+
+    barrasCentro: $("#barras-centro"),
+
+    topClientes: $("#top-clientes"),
+
+    cuerpoTabla: $("#cuerpo-tabla"),
+
+    contador: $("#contador"),
+
+    pageInfo: $("#page-info"),
+
+    prevPage: $("#prev-page"),
+
+    nextPage: $("#next-page"),
+
+    btnReset: $("#btn-reset"),
+
+    btnPDF: $("#btn-pdf"),
+
+    tooltip: $("#tooltip")
+
+};
 
 
-function fmtCompact(valor) {
+/* =========================================================
+   INICIO
+========================================================= */
 
-    const n = numero(valor);
+document.addEventListener("DOMContentLoaded", iniciar);
 
-    if (Math.abs(n) >= 1e9) {
-        return "$" +
-            (n / 1e9).toLocaleString("es-CL", {
-                maximumFractionDigits: 1
-            }) +
-            " mil M";
+
+async function iniciar() {
+
+    try {
+
+        await cargarDatos();
+
+        configurarEventos();
+
+        cargarFiltros();
+
+        renderizarTodo();
+
+    } catch (error) {
+
+        console.error("Error iniciando dashboard:", error);
+
+        mostrarErrorDashboard(error);
+
     }
 
-    if (Math.abs(n) >= 1e6) {
-        return "$" +
-            (n / 1e6).toLocaleString("es-CL", {
-                maximumFractionDigits: 1
-            }) +
-            " M";
-    }
-
-    if (Math.abs(n) >= 1e3) {
-        return "$" +
-            (n / 1e3).toLocaleString("es-CL", {
-                maximumFractionDigits: 1
-            }) +
-            " mil";
-    }
-
-    return "$" + fmt(n);
 }
 
 
-function escapar(valor) {
+/* =========================================================
+   CARGAR JSON
+========================================================= */
 
-    return String(valor ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+async function cargarDatos() {
+
+    const respuesta = await fetch(
+        `${CONFIG.JSON_URL}?v=${Date.now()}`,
+        {
+            cache: "no-store"
+        }
+    );
+
+    if (!respuesta.ok) {
+
+        throw new Error(
+            `No se pudo cargar ${CONFIG.JSON_URL} (${respuesta.status})`
+        );
+
+    }
+
+    payload = await respuesta.json();
+
+    datosOriginales = Array.isArray(payload.tabla)
+        ? payload.tabla
+        : [];
+
+    datosFiltrados = [...datosOriginales];
+
+    console.log("Dashboard cargado:", payload);
+
 }
 
 
-/* ============================================================
+/* =========================================================
+   EVENTOS
+========================================================= */
+
+function configurarEventos() {
+
+    DOM.centro?.addEventListener(
+        "change",
+        manejarFiltros
+    );
+
+    DOM.region?.addEventListener(
+        "change",
+        manejarFiltros
+    );
+
+    DOM.ciudad?.addEventListener(
+        "change",
+        manejarFiltros
+    );
+
+    DOM.canal?.addEventListener(
+        "change",
+        manejarFiltros
+    );
+
+
+    DOM.buscar?.addEventListener(
+        "input",
+        manejarFiltros
+    );
+
+
+    DOM.btnReset?.addEventListener(
+        "click",
+        restablecerFiltros
+    );
+
+
+    DOM.btnPDF?.addEventListener(
+        "click",
+        () => window.print()
+    );
+
+
+    DOM.prevPage?.addEventListener(
+        "click",
+        () => cambiarPagina(-1)
+    );
+
+
+    DOM.nextPage?.addEventListener(
+        "click",
+        () => cambiarPagina(1)
+    );
+
+
+    $$(".table-panel th[data-col]").forEach(
+        th => {
+
+            th.addEventListener(
+                "click",
+                () => ordenarTabla(th.dataset.col)
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FILTROS
+========================================================= */
+
+function cargarFiltros() {
+
+    const opciones = payload?.opciones || {};
+
+    const centros = obtenerOpciones(
+        opciones.centros,
+        datosOriginales,
+        "Centro_Origen"
+    );
+
+    const regiones = obtenerOpciones(
+        opciones.regiones,
+        datosOriginales,
+        "Region_Zona"
+    );
+
+    const ciudades = obtenerOpciones(
+        opciones.ciudades,
+        datosOriginales,
+        "Ciudad"
+    );
+
+    const canales = obtenerOpciones(
+        opciones.canales,
+        datosOriginales,
+        "Canal_L4"
+    );
+
+
+    llenarSelect(
+        DOM.centro,
+        centros,
+        "Todos los centros"
+    );
+
+    llenarSelect(
+        DOM.region,
+        regiones,
+        "Todas las regiones"
+    );
+
+    llenarSelect(
+        DOM.ciudad,
+        ciudades,
+        "Todas las ciudades"
+    );
+
+    llenarSelect(
+        DOM.canal,
+        canales,
+        "Todos los canales"
+    );
+
+}
+
+
+/* =========================================================
+   OBTENER OPCIONES
+========================================================= */
+
+function obtenerOpciones(
+    opciones,
+    filas,
+    campo
+) {
+
+    if (Array.isArray(opciones)) {
+
+        return opciones
+            .map(valor => {
+
+                if (
+                    valor &&
+                    typeof valor === "object"
+                ) {
+
+                    return valor.valor ??
+                        valor.label ??
+                        valor.nombre ??
+                        valor.name ??
+                        "";
+
+                }
+
+                return valor;
+
+            })
+            .filter(Boolean)
+            .map(String)
+            .sort(
+                (a, b) =>
+                    a.localeCompare(
+                        b,
+                        "es",
+                        {
+                            sensitivity: "base"
+                        }
+                    )
+            );
+
+    }
+
+
+    return [
+        ...new Set(
+
+            filas
+                .map(
+                    fila => fila?.[campo]
+                )
+                .filter(
+                    valor =>
+                        valor !== null &&
+                        valor !== undefined &&
+                        String(valor).trim() !== ""
+                )
+                .map(String)
+
+        )
+
+    ].sort(
+        (a, b) =>
+            a.localeCompare(
+                b,
+                "es",
+                {
+                    sensitivity: "base"
+                }
+            )
+    );
+
+}
+
+
+/* =========================================================
+   LLENAR SELECT
+========================================================= */
+
+function llenarSelect(
+    select,
+    valores,
+    placeholder
+) {
+
+    if (!select) return;
+
+    select.innerHTML = "";
+
+    const primeraOpcion =
+        document.createElement("option");
+
+    primeraOpcion.value = "";
+
+    primeraOpcion.textContent =
+        placeholder;
+
+    select.appendChild(
+        primeraOpcion
+    );
+
+
+    valores.forEach(
+        valor => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = valor;
+
+            option.textContent = valor;
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   MANEJAR FILTROS
+========================================================= */
+
+function manejarFiltros() {
+
+    filtros.centro =
+        DOM.centro?.value || "";
+
+    filtros.region =
+        DOM.region?.value || "";
+
+    filtros.ciudad =
+        DOM.ciudad?.value || "";
+
+    filtros.canal =
+        DOM.canal?.value || "";
+
+    filtros.buscar =
+        (
+            DOM.buscar?.value || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    paginaActual = 1;
+
+
+    datosFiltrados =
+        datosOriginales.filter(
+            fila => {
+
+                if (
+                    filtros.centro &&
+                    String(
+                        fila.Centro_Origen ?? ""
+                    ) !== filtros.centro
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+                    filtros.region &&
+                    String(
+                        fila.Region_Zona ?? ""
+                    ) !== filtros.region
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+                    filtros.ciudad &&
+                    String(
+                        fila.Ciudad ?? ""
+                    ) !== filtros.ciudad
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+                    filtros.canal &&
+                    String(
+                        fila.Canal_L4 ?? ""
+                    ) !== filtros.canal
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (filtros.buscar) {
+
+                    const texto = [
+
+                        fila.Centro_Origen,
+
+                        fila.Region_Zona,
+
+                        fila.Ciudad,
+
+                        fila.Canal_L4,
+
+                        fila.Cliente,
+
+                        fila.Segmento_L5
+
+                    ]
+                        .filter(Boolean)
+                        .join(" ")
+                        .toLowerCase();
+
+
+                    if (
+                        !texto.includes(
+                            filtros.buscar
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+                return true;
+
+            }
+        );
+
+
+    renderizarTodo();
+
+}
+
+
+/* =========================================================
+   RESTABLECER
+========================================================= */
+
+function restablecerFiltros() {
+
+    filtros = {
+
+        centro: "",
+
+        region: "",
+
+        ciudad: "",
+
+        canal: "",
+
+        buscar: ""
+
+    };
+
+
+    if (DOM.centro)
+        DOM.centro.value = "";
+
+    if (DOM.region)
+        DOM.region.value = "";
+
+    if (DOM.ciudad)
+        DOM.ciudad.value = "";
+
+    if (DOM.canal)
+        DOM.canal.value = "";
+
+    if (DOM.buscar)
+        DOM.buscar.value = "";
+
+
+    paginaActual = 1;
+
+    ordenActual = {
+
+        columna: null,
+
+        direccion: 1
+
+    };
+
+
+    datosFiltrados =
+        [...datosOriginales];
+
+
+    renderizarTodo();
+
+}
+
+
+/* =========================================================
+   RENDERIZAR TODO
+========================================================= */
+
+function renderizarTodo() {
+
+    renderizarKPIs();
+
+    renderizarInsights();
+
+    renderizarGraficoMensual();
+
+    renderizarBarrasRegion();
+
+    renderizarBarrasCentro();
+
+    renderizarTopClientes();
+
+    renderizarTabla();
+
+    actualizarContadorFiltros();
+
+}
+
+
+/* =========================================================
+   KPIs
+========================================================= */
+
+function renderizarKPIs() {
+
+    const pnv =
+        sumarCampo(
+            datosFiltrados,
+            "PNV_2025_CLP"
+        );
+
+
+    const clientes =
+        contarUnicos(
+            datosFiltrados,
+            obtenerCampoCliente
+        );
+
+
+    const centros =
+        contarUnicos(
+            datosFiltrados,
+            fila => fila.Centro_Origen
+        );
+
+
+    const regiones =
+        contarUnicos(
+            datosFiltrados,
+            fila => fila.Region_Zona
+        );
+
+
+    animarNumero(
+        DOM.kpiPNV,
+        pnv,
+        formatearCLP
+    );
+
+
+    animarNumero(
+        DOM.kpiClientes,
+        clientes,
+        formatearNumero
+    );
+
+
+    animarNumero(
+        DOM.kpiCentros,
+        centros,
+        formatearNumero
+    );
+
+
+    animarNumero(
+        DOM.kpiRegiones,
+        regiones,
+        formatearNumero
+    );
+
+
+    if (DOM.kpiPNVFoot) {
+
+        DOM.kpiPNVFoot.textContent =
+            "CLP · 2025";
+
+    }
+
+}
+
+
+/* =========================================================
+   OBTENER CLIENTE
+========================================================= */
+
+function obtenerCampoCliente(fila) {
+
+    return (
+        fila.Cliente ??
+        fila.Segmento_L5 ??
+        fila.Cod_Cliente ??
+        ""
+    );
+
+}
+
+
+/* =========================================================
    ANIMACIÓN DE NÚMEROS
-   ============================================================ */
+========================================================= */
 
-function animarNumero(elemento, destino, duracion = 1200, tipo = "normal") {
+function animarNumero(
+    elemento,
+    valorFinal,
+    formatter
+) {
 
-    if (!elemento) {
-        return;
-    }
+    if (!elemento) return;
 
-    const objetivo = numero(destino);
-    const inicio = performance.now();
+
+    const valor =
+        Number(valorFinal) || 0;
+
+
+    const duracion =
+        CONFIG.DURACION_KPI;
+
+
+    const inicio =
+        performance.now();
+
 
     function frame(ahora) {
 
         const progreso =
             Math.min(
-                (ahora - inicio) / duracion,
+                (ahora - inicio) /
+                duracion,
                 1
             );
 
-        /*
-         * Easing:
-         * empieza rápido y termina suavemente.
-         */
+
         const easing =
-            1 - Math.pow(1 - progreso, 3);
-
-        const actual =
-            objetivo * easing;
-
-        if (tipo === "clp") {
-            elemento.textContent =
-                "$" + fmt(actual);
-        } else {
-            elemento.textContent =
-                fmt(actual);
-        }
-
-        if (progreso < 1) {
-            requestAnimationFrame(frame);
-        }
-    }
-
-    requestAnimationFrame(frame);
-}
-
-
-/* ============================================================
-   ANIMACIÓN DE TARJETAS
-   ============================================================ */
-
-function animarTarjetas() {
-
-    const elementos =
-        document.querySelectorAll(
-            ".kpi-card, .insight-card, .panel"
-        );
-
-    elementos.forEach((elemento, indice) => {
-
-        elemento.style.opacity = "0";
-        elemento.style.transform =
-            "translateY(15px)";
-
-        setTimeout(() => {
-
-            elemento.style.transition =
-                "opacity .55s ease, transform .55s ease";
-
-            elemento.style.opacity = "1";
-            elemento.style.transform =
-                "translateY(0)";
-
-        }, 80 + indice * 70);
-    });
-}
-
-
-/* ============================================================
-   SELECTS
-   ============================================================ */
-
-function poblarSelect(elemento, opciones) {
-
-    if (!elemento) {
-        return;
-    }
-
-    opciones.forEach(valor => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = valor;
-        option.textContent = valor;
-
-        elemento.appendChild(option);
-    });
-}
-
-
-/* ============================================================
-   FILTROS
-   ============================================================ */
-
-function filtroActual() {
-
-    return {
-
-        centro:
-            elCentro?.value || "",
-
-        region:
-            elRegion?.value || "",
-
-        ciudad:
-            elCiudad?.value || "",
-
-        canal:
-            elCanal?.value || "",
-
-        buscar:
-            (elBuscar?.value || "")
-                .toLowerCase()
-                .trim()
-    };
-}
-
-
-function filtrar() {
-
-    const filtro =
-        filtroActual();
-
-    return datos.filter(registro => {
-
-        const coincideCentro =
-            !filtro.centro ||
-            registro.Centro_Origen === filtro.centro;
-
-        const coincideRegion =
-            !filtro.region ||
-            registro.Region_Zona === filtro.region;
-
-        const coincideCiudad =
-            !filtro.ciudad ||
-            registro.Ciudad === filtro.ciudad;
-
-        const coincideCanal =
-            !filtro.canal ||
-            registro.Canal_L4 === filtro.canal;
-
-        const texto =
-            [
-                registro.Cliente,
-                registro.Canal_L4,
-                registro.Ciudad,
-                registro.Region_Zona,
-                registro.Centro_Origen
-            ]
-                .map(x =>
-                    String(x || "").toLowerCase()
-                );
-
-        const coincideBusqueda =
-            !filtro.buscar ||
-            texto.some(x =>
-                x.includes(filtro.buscar)
+            1 -
+            Math.pow(
+                1 - progreso,
+                3
             );
 
-        return (
-            coincideCentro &&
-            coincideRegion &&
-            coincideCiudad &&
-            coincideCanal &&
-            coincideBusqueda
-        );
-    });
+
+        const actual =
+            valor * easing;
+
+
+        elemento.textContent =
+            formatter(actual);
+
+
+        if (progreso < 1) {
+
+            requestAnimationFrame(frame);
+
+        } else {
+
+            elemento.textContent =
+                formatter(valor);
+
+        }
+
+    }
+
+
+    requestAnimationFrame(frame);
+
 }
 
 
-/* ============================================================
-   AGREGACIONES
-   ============================================================ */
-
-function aggregate(filas, campo) {
-
-    const mapa = new Map();
-
-    filas.forEach(registro => {
-
-        const valor =
-            registro[campo] || "Sin información";
-
-        mapa.set(
-            valor,
-            (mapa.get(valor) || 0) + 1
-        );
-    });
-
-    return [...mapa.entries()]
-        .map(([label, value]) => ({
-            label,
-            value
-        }))
-        .sort(
-            (a, b) =>
-                b.value - a.value
-        );
-}
-
-
-/* ============================================================
-   KPI
-   ============================================================ */
-
-function pintarKPIs(filas) {
-
-    const clientes =
-        new Set(
-            filas
-                .map(x => x.Cliente)
-                .filter(Boolean)
-        ).size;
-
-    const centros =
-        new Set(
-            filas
-                .map(x => x.Centro_Origen)
-                .filter(Boolean)
-        ).size;
-
-    const regiones =
-        new Set(
-            filas
-                .map(x => x.Region_Zona)
-                .filter(Boolean)
-        ).size;
-
-    const pnv =
-        filas.reduce(
-            (total, fila) =>
-                total +
-                numero(fila.PNV_2025_CLP),
-            0
-        );
-
-    animarNumero(
-        $("kpi-clientes"),
-        clientes,
-        900
-    );
-
-    animarNumero(
-        $("kpi-centros"),
-        centros,
-        1000
-    );
-
-    animarNumero(
-        $("kpi-regiones"),
-        regiones,
-        1100
-    );
-
-    animarNumero(
-        $("kpi-pnv"),
-        pnv,
-        1400,
-        "clp"
-    );
-
-    if ($("kpi-pnv-foot")) {
-
-        $("kpi-pnv-foot").textContent =
-            filas.length === datos.length
-                ? "CLP · 2025 · total"
-                : "CLP · 2025 · filtrado";
-    }
-
-    if ($("filter-count")) {
-
-        $("filter-count").textContent =
-            filas.length === datos.length
-                ? "Vista completa"
-                : `${fmt(filas.length)} registros filtrados`;
-    }
-}
-
-
-/* ============================================================
-   BARRAS
-   ============================================================ */
-
-function pintarBarras(id, datosBarras, clickFn) {
-
-    const contenedor = $(id);
-
-    if (!contenedor) {
-        return;
-    }
-
-    if (!datosBarras.length) {
-
-        contenedor.innerHTML = `
-            <div class="empty">
-                Sin resultados con los filtros actuales.
-            </div>
-        `;
-
-        return;
-    }
-
-    const top =
-        datosBarras.slice(0, 10);
-
-    const maximo =
-        top[0]?.value || 1;
-
-    contenedor.innerHTML =
-        top.map((item, indice) => {
-
-            const porcentaje =
-                (
-                    item.value /
-                    maximo *
-                    100
-                ).toFixed(1);
-
-            return `
-                <div
-                    class="bar-row"
-                    title="${escapar(item.label)}"
-                    data-indice="${indice}"
-                >
-
-                    <span class="bar-label">
-                        ${escapar(item.label)}
-                    </span>
-
-                    <div class="bar-track">
-
-                        <div
-                            class="bar-fill"
-                            style="--w:${porcentaje}%"
-                        ></div>
-
-                    </div>
-
-                    <span class="bar-num">
-                        ${fmt(item.value)}
-                    </span>
-
-                </div>
-            `;
-
-        }).join("");
-
-    const filas =
-        contenedor.querySelectorAll(
-            ".bar-row"
-        );
-
-    filas.forEach((fila, indice) => {
-
-        fila.addEventListener(
-            "click",
-            () => {
-                clickFn(top[indice].label);
-            }
-        );
-    });
-}
-
-
-/* ============================================================
+/* =========================================================
    INSIGHTS
-   ============================================================ */
+========================================================= */
 
-function pintarInsights(filas) {
+function renderizarInsights() {
 
-    const regiones =
-        aggregate(
-            filas,
-            "Region_Zona"
+    renderInsightRegion();
+
+    renderInsightCentro();
+
+    renderInsightMes();
+
+}
+
+
+/* =========================================================
+   INSIGHT REGIÓN
+========================================================= */
+
+function renderInsightRegion() {
+
+    const grupos =
+        agruparConteo(
+            datosFiltrados,
+            "Region_Zona",
+            obtenerCampoCliente
         );
 
-    const centros =
-        aggregate(
-            filas,
-            "Centro_Origen"
+
+    const ganador =
+        grupos[0];
+
+
+    if (!ganador) {
+
+        setText(
+            DOM.insightRegion,
+            "—"
         );
 
-    if ($("insight-region")) {
+        setText(
+            DOM.insightRegionDetail,
+            "Sin datos"
+        );
 
-        $("insight-region").textContent =
-            regiones[0]?.label || "—";
+        return;
+
     }
 
-    if ($("insight-region-detail")) {
 
-        $("insight-region-detail").textContent =
-            regiones[0]
-                ? `${fmt(regiones[0].value)} clientes / subcuentas`
-                : "Sin datos";
+    setText(
+        DOM.insightRegion,
+        ganador.nombre
+    );
+
+
+    setText(
+        DOM.insightRegionDetail,
+        `${formatearNumero(ganador.valor)} clientes`
+    );
+
+}
+
+
+/* =========================================================
+   INSIGHT CENTRO
+========================================================= */
+
+function renderInsightCentro() {
+
+    const grupos =
+        agruparConteo(
+            datosFiltrados,
+            "Centro_Origen",
+            obtenerCampoCliente
+        );
+
+
+    const ganador =
+        grupos[0];
+
+
+    if (!ganador) {
+
+        setText(
+            DOM.insightCentro,
+            "—"
+        );
+
+        setText(
+            DOM.insightCentroDetail,
+            "Sin datos"
+        );
+
+        return;
+
     }
 
-    if ($("insight-centro")) {
 
-        $("insight-centro").textContent =
-            centros[0]?.label || "—";
-    }
+    setText(
+        DOM.insightCentro,
+        ganador.nombre
+    );
 
-    if ($("insight-centro-detail")) {
 
-        $("insight-centro-detail").textContent =
-            centros[0]
-                ? `${fmt(centros[0].value)} clientes / subcuentas`
-                : "Sin datos";
-    }
+    setText(
+        DOM.insightCentroDetail,
+        `${formatearNumero(ganador.valor)} clientes`
+    );
+
+}
+
+
+/* =========================================================
+   INSIGHT MES
+========================================================= */
+
+function renderInsightMes() {
 
     const mensual =
-        Array.isArray(payload?.mensual)
+        Array.isArray(
+            payload?.mensual
+        )
             ? payload.mensual
             : [];
 
-    if (
-        mensual.length &&
-        filas.length === datos.length
-    ) {
 
-        const mejorMes =
-            mensual.reduce(
-                (mejor, actual) =>
-                    numero(actual.pnv) >
-                    numero(mejor.pnv)
-                        ? actual
-                        : mejor,
-                mensual[0]
-            );
+    if (!mensual.length) {
 
-        if ($("insight-month")) {
-
-            $("insight-month").textContent =
-                mejorMes.mes || "—";
-        }
-
-        if ($("insight-month-detail")) {
-
-            $("insight-month-detail").textContent =
-                mejorMes.pnv
-                    ? `${fmtCompact(mejorMes.pnv)} PNV`
-                    : "Sin datos";
-        }
-
-    } else {
-
-        if ($("insight-month")) {
-            $("insight-month").textContent =
-                "Vista filtrada";
-        }
-
-        if ($("insight-month-detail")) {
-            $("insight-month-detail").textContent =
-                "El histórico mensual corresponde a la vista completa";
-        }
-    }
-}
-
-
-/* ============================================================
-   TOP 10 CLIENTES
-   ============================================================ */
-
-function pintarTopClientes(filas) {
-
-    const contenedor =
-        $("top-clientes");
-
-    if (!contenedor) {
-        return;
-    }
-
-    const mapa = new Map();
-
-    filas.forEach(registro => {
-
-        const cliente =
-            registro.Cliente ||
-            "Sin cliente";
-
-        const actual =
-            mapa.get(cliente) || 0;
-
-        mapa.set(
-            cliente,
-            actual +
-            numero(registro.PNV_2025_CLP)
+        setText(
+            DOM.insightMonth,
+            "—"
         );
-    });
 
-    const ranking =
-        [...mapa.entries()]
-            .map(([Cliente, PNV]) => ({
-                Cliente,
-                PNV
-            }))
+        setText(
+            DOM.insightMonthDetail,
+            "Sin datos mensuales"
+        );
+
+        return;
+
+    }
+
+
+    const mayor =
+        [...mensual]
             .sort(
                 (a, b) =>
-                    b.PNV - a.PNV
-            )
-            .slice(0, 10);
+                    Number(b.pnv || 0) -
+                    Number(a.pnv || 0)
+            )[0];
 
-    if (!ranking.length) {
 
-        contenedor.innerHTML =
-            `<div class="empty">Sin datos.</div>`;
+    setText(
+        DOM.insightMonth,
+        mayor.mes || "—"
+    );
 
-        return;
-    }
 
-    const maximo =
-        ranking[0].PNV || 1;
+    setText(
+        DOM.insightMonthDetail,
+        formatearCLP(
+            mayor.pnv || 0
+        )
+    );
 
-    contenedor.innerHTML =
-        ranking.map((item, indice) => {
+}
 
-            const porcentaje =
-                (
-                    item.PNV /
-                    maximo *
-                    100
-                ).toFixed(1);
 
-            return `
-                <div class="top-item">
+/* =========================================================
+   GRÁFICO MENSUAL
+========================================================= */
 
-                    <span class="rank">
-                        ${String(indice + 1).padStart(2, "0")}
-                    </span>
+function renderizarGraficoMensual() {
 
-                    <span
-                        class="top-name"
-                        title="${escapar(item.Cliente)}"
-                    >
-                        ${escapar(item.Cliente)}
-                    </span>
+    if (!DOM.chartMonthly) return;
 
-                    <span class="top-pnv">
-                        ${fmtCompact(item.PNV)}
-                    </span>
 
-                    <span class="top-track">
+    const mensual =
+        Array.isArray(
+            payload?.mensual
+        )
+            ? payload.mensual
+            : [];
 
-                        <i
-                            class="top-bar-animated"
-                            style="--top-width:${porcentaje}%"
-                        ></i>
 
-                    </span>
+    DOM.chartMonthly.innerHTML = "";
 
-                </div>
-            `;
-        }).join("");
 
-    /*
-     * Animación de cada cliente.
-     */
+    if (!mensual.length) {
 
-    const barras =
-        contenedor.querySelectorAll(
-            ".top-bar-animated"
+        mostrarVacio(
+            DOM.chartMonthly,
+            "No hay datos mensuales disponibles."
         );
 
-    barras.forEach((barra, indice) => {
+        return;
 
-        barra.style.width = "0%";
+    }
 
-        setTimeout(() => {
 
-            barra.style.transition =
-                "width 900ms cubic-bezier(.2,.7,.2,1)";
+    const datos =
+        mensual.map(
+            item => ({
 
-            barra.style.width =
-                "var(--top-width)";
+                mes:
+                    item.mes ??
+                    item.nombre ??
+                    String(
+                        item.mes_num ?? ""
+                    ),
 
-        }, 100 + indice * 80);
-    });
+                pnv:
+                    Number(
+                        item.pnv ??
+                        item.PNV ??
+                        0
+                    ),
+
+                cajas:
+                    Number(
+                        item.cajas ??
+                        item.Cajas ??
+                        0
+                    ),
+
+                clientes:
+                    Number(
+                        item.clientes ??
+                        item.Clientes ??
+                        0
+                    )
+
+            })
+        );
+
+
+    construirSVGMensual(
+        datos
+    );
+
 }
 
 
-/* ============================================================
-   GRÁFICO MENSUAL
-   ============================================================ */
+/* =========================================================
+   CONSTRUIR SVG
+========================================================= */
 
-function pathFor(puntos) {
+function construirSVGMensual(
+    datos
+) {
 
-    return puntos
-        .map(
-            (punto, indice) =>
-                (indice ? "L" : "M") +
-                punto.x.toFixed(1) +
-                " " +
-                punto.y.toFixed(1)
-        )
-        .join(" ");
-}
+    const width = 900;
 
+    const height = 300;
 
-function pintarMensual(filas) {
+    const margen = {
 
-    const contenedor =
-        $("chart-monthly");
+        top: 25,
 
-    if (!contenedor) {
-        return;
-    }
+        right: 25,
 
-    let serie = [];
+        bottom: 45,
 
-    /*
-     * Vista completa:
-     * usamos directamente payload.mensual
-     */
-    if (
-        filas.length === datos.length &&
-        Array.isArray(payload?.mensual)
-    ) {
+        left: 65
 
-        serie =
-            payload.mensual.map(item => ({
-                label: item.mes,
-                value: numero(item.pnv),
-                cajas: numero(item.cajas),
-                clientes: numero(item.clientes)
-            }));
-
-    } else {
-
-        /*
-         * Con filtros no tenemos histórico mensual
-         * en la tabla maestra.
-         */
-        const total =
-            filas.reduce(
-                (suma, fila) =>
-                    suma +
-                    numero(fila.PNV_2025_CLP),
-                0
-            );
-
-        serie = [
-            {
-                label: "Filtrado",
-                value: total
-            }
-        ];
-    }
-
-    if (serie.length < 2) {
-
-        const valor =
-            serie[0]?.value || 0;
-
-        contenedor.innerHTML = `
-            <div
-                class="empty"
-                style="padding-top:110px"
-            >
-
-                PNV de la vista actual:
-
-                <strong>
-                    ${fmtCompact(valor)}
-                </strong>
-
-                <br>
-
-                <small>
-                    El histórico mensual corresponde
-                    a la vista completa 2025.
-                </small>
-
-            </div>
-        `;
-
-        return;
-    }
-
-    const W = 760;
-    const H = 300;
-
-    const pad = {
-        l: 35,
-        r: 20,
-        t: 25,
-        b: 40
     };
 
-    const anchoInterno =
-        W -
-        pad.l -
-        pad.r;
 
-    const altoInterno =
-        H -
-        pad.t -
-        pad.b;
+    const innerWidth =
+        width -
+        margen.left -
+        margen.right;
 
-    const maximo =
+
+    const innerHeight =
+        height -
+        margen.top -
+        margen.bottom;
+
+
+    const maxPNV =
         Math.max(
-            ...serie.map(
-                item => item.value
-            )
-        ) * 1.08 || 1;
+            ...datos.map(
+                d => d.pnv
+            ),
+            1
+        );
 
-    const puntos =
-        serie.map((item, indice) => {
 
-            const x =
-                pad.l +
+    const minPNV =
+        Math.min(
+            ...datos.map(
+                d => d.pnv
+            ),
+            0
+        );
+
+
+    const rango =
+        maxPNV -
+        minPNV || 1;
+
+
+    const x = index => {
+
+        if (datos.length === 1)
+            return margen.left +
+                innerWidth / 2;
+
+        return margen.left +
+            (
+                index /
+                (datos.length - 1)
+            ) *
+            innerWidth;
+
+    };
+
+
+    const y = value => {
+
+        return margen.top +
+            innerHeight -
+            (
                 (
-                    indice /
-                    (serie.length - 1)
-                ) *
-                anchoInterno;
+                    value -
+                    minPNV
+                ) /
+                rango
+            ) *
+            innerHeight;
 
-            const y =
-                pad.t +
-                altoInterno -
-                (
-                    item.value /
-                    maximo
-                ) *
-                altoInterno;
+    };
 
-            return {
-                x,
-                y
-            };
-        });
 
-    const linea =
-        pathFor(puntos);
+    let puntos = "";
 
-    const ultimo =
-        puntos[puntos.length - 1];
 
-    const primero =
-        puntos[0];
+    datos.forEach(
+        (dato, index) => {
+
+            puntos +=
+                `${x(index)},${y(dato.pnv)} `;
+
+        }
+    );
+
+
+    const primerPunto =
+        `${x(0)},${y(datos[0].pnv)}`;
+
+
+    const ultimoPunto =
+        `${x(datos.length - 1)},${y(
+            datos[datos.length - 1].pnv
+        )}`;
+
 
     const area =
-        linea +
-        ` L ${ultimo.x} ${H - pad.b}` +
-        ` L ${primero.x} ${H - pad.b}` +
-        " Z";
+        `${primerPunto} ` +
+        puntos +
+        `${ultimoPunto} ` +
+        `${x(datos.length - 1)},${margen.top + innerHeight} ` +
+        `${x(0)},${margen.top + innerHeight}`;
 
-    const lineasGuia = [0, .25, .5, .75, 1]
-        .map(porcentaje => {
 
-            const y =
-                pad.t +
-                altoInterno *
-                porcentaje;
-
-            return `
-                <line
-                    class="grid-line"
-                    x1="${pad.l}"
-                    x2="${W - pad.r}"
-                    y1="${y}"
-                    y2="${y}"
-                />
-
-                <text
-                    class="axis-label"
-                    x="${pad.l}"
-                    y="${y - 6}"
-                >
-                    ${fmtCompact(
-                        maximo *
-                        (1 - porcentaje)
-                    ).replace("$", "")}
-                </text>
-            `;
-        })
-        .join("");
-
-    const puntosSVG =
-        puntos.map((punto, indice) => {
-
-            const item =
-                serie[indice];
-
-            return `
-                <circle
-                    class="chart-point"
-                    cx="${punto.x}"
-                    cy="${punto.y}"
-                    r="4.5"
-                    data-indice="${indice}"
-                />
-
-                <text
-                    class="axis-label"
-                    text-anchor="middle"
-                    x="${punto.x}"
-                    y="${H - 10}"
-                >
-                    ${escapar(item.label)}
-                </text>
-            `;
-        }).join("");
-
-    contenedor.innerHTML = `
+    let svg = `
 
         <svg
-            viewBox="0 0 ${W} ${H}"
-            role="img"
-            aria-label="Evolución mensual del PNV"
-        >
+            viewBox="0 0 ${width} ${height}"
+            preserveAspectRatio="none"
+            aria-label="Evolución mensual del PNV">
 
-            ${lineasGuia}
+            <defs>
 
-            <path
-                class="chart-fill"
-                d="${area}"
-            />
+                <linearGradient
+                    id="chartGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1">
 
-            <path
-                class="chart-line"
-                d="${linea}"
-            />
+                    <stop
+                        offset="0%"
+                        stop-color="#0b7f88"
+                        stop-opacity="0.25">
+                    </stop>
 
-            ${puntosSVG}
+                    <stop
+                        offset="100%"
+                        stop-color="#0b7f88"
+                        stop-opacity="0.02">
+                    </stop>
 
-        </svg>
+                </linearGradient>
+
+            </defs>
+
     `;
 
-    animarGrafico(contenedor);
 
-    prepararTooltipsGrafico(
-        contenedor,
-        serie
-    );
-}
+    /* GRID */
+
+    const lineas =
+        5;
 
 
-/* ============================================================
-   ANIMACIÓN DEL GRÁFICO
-   ============================================================ */
+    for (
+        let i = 0;
+        i <= lineas;
+        i++
+    ) {
 
-function animarGrafico(contenedor) {
+        const valor =
+            maxPNV -
+            (
+                maxPNV -
+                minPNV
+            ) *
+            (
+                i /
+                lineas
+            );
 
-    const linea =
-        contenedor.querySelector(
-            ".chart-line"
-        );
 
-    if (linea) {
+        const posicion =
+            margen.top +
+            (
+                innerHeight *
+                i /
+                lineas
+            );
 
-        const longitud =
-            linea.getTotalLength();
 
-        linea.style.strokeDasharray =
-            longitud;
+        svg += `
 
-        linea.style.strokeDashoffset =
-            longitud;
+            <line
+                class="grid-line"
+                x1="${margen.left}"
+                y1="${posicion}"
+                x2="${width - margen.right}"
+                y2="${posicion}">
+            </line>
 
-        /*
-         * Forzamos al navegador a registrar
-         * el estado inicial antes de animar.
-         */
-        linea.getBoundingClientRect();
+            <text
+                class="axis-label"
+                x="${margen.left - 9}"
+                y="${posicion + 4}"
+                text-anchor="end">
 
-        linea.style.transition =
-            "stroke-dashoffset 1.7s cubic-bezier(.2,.7,.2,1)";
+                ${formatearCompacto(valor)}
 
-        linea.style.strokeDashoffset =
-            "0";
+            </text>
+
+        `;
+
     }
 
-    const puntos =
-        contenedor.querySelectorAll(
-            ".chart-point"
-        );
 
-    puntos.forEach((punto, indice) => {
+    /* ÁREA */
 
-        punto.style.opacity = "0";
-        punto.style.transform =
-            "scale(.3)";
-        punto.style.transformBox =
-            "fill-box";
-        punto.style.transformOrigin =
-            "center";
+    svg += `
 
-        setTimeout(() => {
+        <polygon
+            class="chart-fill"
+            points="
+                ${area}
+            "
+            style="
+                fill:url(#chartGradient);
+            ">
+        </polygon>
 
-            punto.style.transition =
-                "opacity .35s ease, transform .35s ease";
+    `;
 
-            punto.style.opacity = "1";
-            punto.style.transform =
-                "scale(1)";
 
-        }, 500 + indice * 80);
-    });
+    /* LÍNEA */
+
+    svg += `
+
+        <polyline
+            class="chart-line"
+            points="${puntos}"
+            style="
+                stroke-dasharray: ${calcularLongitudLinea(datos)};
+                stroke-dashoffset: ${calcularLongitudLinea(datos)};
+                animation: drawChart 1.2s ease forwards;
+            ">
+        </polyline>
+
+    `;
+
+
+    /* ETIQUETAS Y PUNTOS */
+
+    datos.forEach(
+        (dato, index) => {
+
+            const px =
+                x(index);
+
+            const py =
+                y(dato.pnv);
+
+
+            svg += `
+
+                <text
+                    class="axis-label"
+                    x="${px}"
+                    y="${height - 13}"
+                    text-anchor="middle">
+
+                    ${escapeHTML(
+                        dato.mes
+                    )}
+
+                </text>
+
+
+                <circle
+                    class="chart-point"
+                    cx="${px}"
+                    cy="${py}"
+                    r="4.5"
+                    data-index="${index}">
+
+                </circle>
+
+            `;
+
+        }
+    );
+
+
+    svg += `
+
+        </svg>
+
+    `;
+
+
+    DOM.chartMonthly.innerHTML =
+        svg;
+
+
+    agregarInteraccionPuntos(
+        datos
+    );
+
+
+    agregarEstiloAnimacionGrafico();
+
 }
 
 
-/* ============================================================
-   TOOLTIP
-   ============================================================ */
+/* =========================================================
+   LONGITUD APROXIMADA LÍNEA
+========================================================= */
 
-function prepararTooltipsGrafico(
-    contenedor,
-    serie
+function calcularLongitudLinea(
+    datos
+) {
+
+    return Math.max(
+        600,
+        datos.length * 100
+    );
+
+}
+
+
+/* =========================================================
+   ANIMACIÓN DEL GRÁFICO
+========================================================= */
+
+function agregarEstiloAnimacionGrafico() {
+
+    if (
+        document.getElementById(
+            "dashboard-chart-animation"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const style =
+        document.createElement(
+            "style"
+        );
+
+
+    style.id =
+        "dashboard-chart-animation";
+
+
+    style.textContent = `
+
+        @keyframes drawChart {
+
+            from {
+                stroke-dashoffset: var(--chart-length, 1200);
+            }
+
+            to {
+                stroke-dashoffset: 0;
+            }
+
+        }
+
+    `;
+
+
+    document.head.appendChild(
+        style
+    );
+
+}
+
+
+/* =========================================================
+   TOOLTIP PUNTOS
+========================================================= */
+
+function agregarInteraccionPuntos(
+    datos
 ) {
 
     const puntos =
-        contenedor.querySelectorAll(
+        DOM.chartMonthly.querySelectorAll(
             ".chart-point"
         );
 
-    puntos.forEach(punto => {
 
-        const indice =
-            Number(
-                punto.dataset.indice
+    puntos.forEach(
+        (punto, index) => {
+
+            punto.addEventListener(
+                "mouseenter",
+                event => {
+
+                    const dato =
+                        datos[index];
+
+
+                    mostrarTooltip(
+                        event,
+                        `
+                            <strong>
+                                ${escapeHTML(
+                                    dato.mes
+                                )}
+                            </strong>
+                            <br>
+                            PNV:
+                            ${formatearCLP(
+                                dato.pnv
+                            )}
+                            <br>
+                            Cajas:
+                            ${formatearNumeroDecimal(
+                                dato.cajas
+                            )}
+                            <br>
+                            Clientes:
+                            ${formatearNumero(
+                                dato.clientes
+                            )}
+                        `
+                    );
+
+                }
             );
 
-        const dato =
-            serie[indice];
 
-        punto.addEventListener(
-            "mouseenter",
-            evento => {
-
-                mostrarTooltip(
-                    evento,
-                    `
-                        <b>${escapar(dato.label)}</b>
-                        <br>
-                        PNV:
-                        ${fmt(dato.value)}
-                        ${dato.cajas !== undefined
-                            ? `<br>Cajas: ${fmtDecimal(dato.cajas)}`
-                            : ""}
-                        ${dato.clientes !== undefined
-                            ? `<br>Clientes: ${fmt(dato.clientes)}`
-                            : ""}
-                    `
-                );
-            }
-        );
-
-        punto.addEventListener(
-            "mousemove",
-            moverTooltip
-        );
-
-        punto.addEventListener(
-            "mouseleave",
-            ocultarTooltip
-        );
-
-        /*
-         * Click sobre un mes:
-         * mostramos información en consola.
-         */
-        punto.addEventListener(
-            "click",
-            () => {
-
-                console.log(
-                    "[Dashboard] Mes seleccionado:",
-                    dato
-                );
-            }
-        );
-    });
-}
+            punto.addEventListener(
+                "mousemove",
+                moverTooltip
+            );
 
 
-function mostrarTooltip(evento, html) {
+            punto.addEventListener(
+                "mouseleave",
+                ocultarTooltip
+            );
 
-    const tooltip =
-        $("tooltip");
-
-    if (!tooltip) {
-        return;
-    }
-
-    tooltip.innerHTML =
-        html;
-
-    tooltip.classList.add(
-        "show"
+        }
     );
 
-    moverTooltip(evento);
 }
 
 
-function moverTooltip(evento) {
+/* =========================================================
+   BARRAS REGIÓN
+========================================================= */
 
-    const tooltip =
-        $("tooltip");
+function renderizarBarrasRegion() {
 
-    if (!tooltip) {
-        return;
-    }
-
-    tooltip.style.left =
-        `${evento.clientX + 14}px`;
-
-    tooltip.style.top =
-        `${evento.clientY + 14}px`;
-}
+    if (!DOM.barrasRegion) return;
 
 
-function ocultarTooltip() {
-
-    const tooltip =
-        $("tooltip");
-
-    if (tooltip) {
-
-        tooltip.classList.remove(
-            "show"
+    const grupos =
+        agruparConteo(
+            datosFiltrados,
+            "Region_Zona",
+            obtenerCampoCliente
         );
-    }
+
+
+    renderizarBarras(
+        DOM.barrasRegion,
+        grupos,
+        "region"
+    );
+
 }
 
 
-/* ============================================================
-   TABLA
-   ============================================================ */
+/* =========================================================
+   BARRAS CENTRO
+========================================================= */
 
-function ordenarFilas(filas) {
+function renderizarBarrasCentro() {
 
-    return filas.sort((a, b) => {
+    if (!DOM.barrasCentro) return;
 
-        let valorA =
-            a[ordenCol] ?? "";
 
-        let valorB =
-            b[ordenCol] ?? "";
+    const grupos =
+        agruparConteo(
+            datosFiltrados,
+            "Centro_Origen",
+            obtenerCampoCliente
+        );
 
-        const numeroA =
-            Number(valorA);
 
-        const numeroB =
-            Number(valorB);
+    renderizarBarras(
+        DOM.barrasCentro,
+        grupos,
+        "centro"
+    );
 
-        if (
-            Number.isFinite(numeroA) &&
-            Number.isFinite(numeroB)
-        ) {
-
-            valorA = numeroA;
-            valorB = numeroB;
-
-        } else {
-
-            valorA =
-                String(valorA)
-                    .toLowerCase();
-
-            valorB =
-                String(valorB)
-                    .toLowerCase();
-        }
-
-        if (valorA < valorB) {
-            return ordenAsc ? -1 : 1;
-        }
-
-        if (valorA > valorB) {
-            return ordenAsc ? 1 : -1;
-        }
-
-        return 0;
-    });
 }
 
 
-function renderTable() {
+/* =========================================================
+   AGRUPAR CONTEO
+========================================================= */
 
-    if (!elCuerpo) {
+function agruparConteo(
+    filas,
+    campo,
+    campoUnico
+) {
+
+    const mapa =
+        new Map();
+
+
+    filas.forEach(
+        fila => {
+
+            const nombre =
+                String(
+                    fila?.[campo] ??
+                    "Sin especificar"
+                ).trim();
+
+
+            if (
+                !mapa.has(nombre)
+            ) {
+
+                mapa.set(
+                    nombre,
+                    new Set()
+                );
+
+            }
+
+
+            const valor =
+                String(
+                    campoUnico(fila) ??
+                    ""
+                ).trim();
+
+
+            if (valor) {
+
+                mapa.get(nombre)
+                    .add(valor);
+
+            }
+
+        }
+    );
+
+
+    return [...mapa.entries()]
+        .map(
+            ([nombre, set]) => ({
+
+                nombre,
+
+                valor: set.size
+
+            })
+        )
+        .sort(
+            (a, b) =>
+                b.valor -
+                a.valor
+        );
+
+}
+
+
+/* =========================================================
+   RENDERIZAR BARRAS
+========================================================= */
+
+function renderizarBarras(
+    contenedor,
+    grupos,
+    tipo
+) {
+
+    contenedor.innerHTML = "";
+
+
+    if (!grupos.length) {
+
+        mostrarVacio(
+            contenedor,
+            "Sin datos disponibles."
+        );
+
         return;
+
     }
+
+
+    const gruposVisibles =
+        grupos.slice(
+            0,
+            10
+        );
+
+
+    const max =
+        Math.max(
+            ...gruposVisibles.map(
+                item => item.valor
+            ),
+            1
+        );
+
+
+    gruposVisibles.forEach(
+        item => {
+
+            const porcentaje =
+                (
+                    item.valor /
+                    max
+                ) *
+                100;
+
+
+            const fila =
+                document.createElement(
+                    "div"
+                );
+
+
+            fila.className =
+                "bar-row";
+
+
+            fila.dataset.valor =
+                item.nombre;
+
+
+            fila.innerHTML = `
+
+                <div
+                    class="bar-label"
+                    title="${escapeHTML(
+                        item.nombre
+                    )}">
+
+                    ${escapeHTML(
+                        item.nombre
+                    )}
+
+                </div>
+
+
+                <div class="bar-track">
+
+                    <div
+                        class="bar-fill"
+                        style="
+                            --w: ${porcentaje}%;
+                        ">
+                    </div>
+
+                </div>
+
+
+                <div class="bar-num">
+
+                    ${formatearNumero(
+                        item.valor
+                    )}
+
+                </div>
+
+            `;
+
+
+            fila.addEventListener(
+                "click",
+                () => {
+
+                    if (
+                        tipo === "region"
+                    ) {
+
+                        aplicarFiltroDesdeGrafico(
+                            "region",
+                            item.nombre
+                        );
+
+                    }
+
+
+                    if (
+                        tipo === "centro"
+                    ) {
+
+                        aplicarFiltroDesdeGrafico(
+                            "centro",
+                            item.nombre
+                        );
+
+                    }
+
+                }
+            );
+
+
+            contenedor.appendChild(
+                fila
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FILTRO DESDE GRÁFICOS
+========================================================= */
+
+function aplicarFiltroDesdeGrafico(
+    tipo,
+    valor
+) {
+
+    if (
+        tipo === "region" &&
+        DOM.region
+    ) {
+
+        DOM.region.value =
+            valor;
+
+        filtros.region =
+            valor;
+
+    }
+
+
+    if (
+        tipo === "centro" &&
+        DOM.centro
+    ) {
+
+        DOM.centro.value =
+            valor;
+
+        filtros.centro =
+            valor;
+
+    }
+
+
+    paginaActual = 1;
+
+    manejarFiltros();
+
+
+    window.scrollTo({
+
+        top:
+            0,
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+
+/* =========================================================
+   TOP 10 CLIENTES
+========================================================= */
+
+function renderizarTopClientes() {
+
+    if (!DOM.topClientes) return;
+
+
+    const mapa =
+        new Map();
+
+
+    datosFiltrados.forEach(
+        fila => {
+
+            const cliente =
+                obtenerCampoCliente(
+                    fila
+                );
+
+
+            if (!cliente) return;
+
+
+            const pnv =
+                numero(
+                    fila.PNV_2025_CLP
+                );
+
+
+            mapa.set(
+                cliente,
+                (
+                    mapa.get(cliente) ||
+                    0
+                ) + pnv
+            );
+
+        }
+    );
+
+
+    const ranking =
+        [...mapa.entries()]
+            .map(
+                ([nombre, pnv]) => ({
+
+                    nombre,
+
+                    pnv
+
+                })
+            )
+            .sort(
+                (a, b) =>
+                    b.pnv -
+                    a.pnv
+            )
+            .slice(
+                0,
+                10
+            );
+
+
+    DOM.topClientes.innerHTML = "";
+
+
+    if (!ranking.length) {
+
+        mostrarVacio(
+            DOM.topClientes,
+            "Sin clientes disponibles."
+        );
+
+        return;
+
+    }
+
+
+    const maxPNV =
+        ranking[0].pnv ||
+        1;
+
+
+    ranking.forEach(
+        (item, index) => {
+
+            const porcentaje =
+                (
+                    item.pnv /
+                    maxPNV
+                ) *
+                100;
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "top-item";
+
+
+            div.innerHTML = `
+
+                <div class="rank">
+
+                    #${index + 1}
+
+                </div>
+
+
+                <div
+                    class="top-name"
+                    title="${escapeHTML(
+                        item.nombre
+                    )}">
+
+                    ${escapeHTML(
+                        item.nombre
+                    )}
+
+                </div>
+
+
+                <div class="top-pnv">
+
+                    ${formatearCLP(
+                        item.pnv
+                    )}
+
+                </div>
+
+
+                <div class="top-track">
+
+                    <i
+                        style="
+                            width: 0%;
+                            transition:
+                                width
+                                0.9s
+                                cubic-bezier(
+                                    .22,
+                                    1,
+                                    .36,
+                                    1
+                                );
+                        "
+                        data-width="${porcentaje}">
+                    </i>
+
+                </div>
+
+            `;
+
+
+            DOM.topClientes.appendChild(
+                div
+            );
+
+        }
+    );
+
+
+    requestAnimationFrame(
+        () => {
+
+            setTimeout(
+                () => {
+
+                    DOM.topClientes
+                        .querySelectorAll(
+                            ".top-track i"
+                        )
+                        .forEach(
+                            barra => {
+
+                                barra.style.width =
+                                    `${barra.dataset.width}%`;
+
+                            }
+                        );
+
+                },
+                80
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+function renderizarTabla() {
+
+    if (!DOM.cuerpoTabla)
+        return;
+
 
     let filas =
-        filtrar();
+        [...datosFiltrados];
 
-    filas =
-        ordenarFilas(filas);
+
+    if (
+        ordenActual.columna
+    ) {
+
+        filas.sort(
+            (
+                a,
+                b
+            ) =>
+                compararValores(
+                    a[
+                        ordenActual.columna
+                    ],
+                    b[
+                        ordenActual.columna
+                    ]
+                ) *
+                ordenActual.direccion
+        );
+
+    }
+
+
+    const total =
+        filas.length;
+
 
     const totalPaginas =
         Math.max(
             1,
             Math.ceil(
-                filas.length /
-                porPagina
+                total /
+                CONFIG.FILAS_POR_PAGINA
             )
         );
 
-    if (pagina > totalPaginas) {
-        pagina = totalPaginas;
+
+    if (
+        paginaActual >
+        totalPaginas
+    ) {
+
+        paginaActual =
+            totalPaginas;
+
     }
+
 
     const inicio =
-        (pagina - 1) *
-        porPagina;
+        (
+            paginaActual -
+            1
+        ) *
+        CONFIG.FILAS_POR_PAGINA;
 
-    const vista =
+
+    const fin =
+        Math.min(
+            inicio +
+            CONFIG.FILAS_POR_PAGINA,
+            total
+        );
+
+
+    const visibles =
         filas.slice(
             inicio,
-            inicio + porPagina
+            fin
         );
 
-    const totalPNV =
-        filas.reduce(
-            (suma, fila) =>
-                suma +
-                numero(fila.PNV_2025_CLP),
-            0
-        );
 
-    if (elContador) {
+    DOM.cuerpoTabla.innerHTML = "";
 
-        elContador.textContent =
-            `${fmt(filas.length)} registros · ${fmt(totalPNV)} CLP en la vista`;
-    }
 
-    if (!vista.length) {
+    if (!visibles.length) {
 
-        elCuerpo.innerHTML = `
-            <tr>
-                <td colspan="8">
-                    <div class="empty">
-                        No hay registros para
-                        los filtros seleccionados.
-                    </div>
-                </td>
-            </tr>
+        const tr =
+            document.createElement(
+                "tr"
+            );
+
+
+        tr.innerHTML = `
+
+            <td
+                colspan="8"
+                class="empty">
+
+                No hay resultados
+                para los filtros seleccionados.
+
+            </td>
+
         `;
+
+
+        DOM.cuerpoTabla.appendChild(
+            tr
+        );
 
     } else {
 
-        elCuerpo.innerHTML =
-            vista.map(fila => {
+        visibles.forEach(
+            fila => {
 
-                return `
-                    <tr>
+                const tr =
+                    document.createElement(
+                        "tr"
+                    );
 
-                        <td>
-                            ${escapar(fila.Centro_Origen || "—")}
-                        </td>
 
-                        <td>
-                            ${escapar(fila.Region_Zona || "—")}
-                        </td>
+                tr.innerHTML = `
 
-                        <td>
-                            ${escapar(fila.Ciudad || "—")}
-                        </td>
+                    <td>
+                        ${escapeHTML(
+                            fila.Centro_Origen
+                        )}
+                    </td>
 
-                        <td>
-                            ${escapar(fila.Canal_L4 || "—")}
-                        </td>
+                    <td>
+                        ${escapeHTML(
+                            fila.Region_Zona
+                        )}
+                    </td>
 
-                        <td>
-                            ${escapar(fila.Cliente || "—")}
-                        </td>
+                    <td>
+                        ${escapeHTML(
+                            fila.Ciudad
+                        )}
+                    </td>
 
-                        <td class="num">
-                            ${fmt(fila.Meses_Con_Venta)}
-                        </td>
+                    <td>
+                        ${escapeHTML(
+                            fila.Canal_L4
+                        )}
+                    </td>
 
-                        <td class="num">
-                            ${fmtDecimal(fila.Cajas_2025)}
-                        </td>
+                    <td>
+                        ${escapeHTML(
+                            obtenerCampoCliente(
+                                fila
+                            )
+                        )}
+                    </td>
 
-                        <td class="num">
-                            ${fmt(fila.PNV_2025_CLP)}
-                        </td>
+                    <td class="num">
+                        ${formatearNumero(
+                            fila.Meses_Con_Venta
+                        )}
+                    </td>
 
-                    </tr>
+                    <td class="num">
+                        ${formatearNumeroDecimal(
+                            fila.Cajas_2025
+                        )}
+                    </td>
+
+                    <td class="num">
+                        ${formatearCLP(
+                            fila.PNV_2025_CLP
+                        )}
+                    </td>
+
                 `;
 
-            }).join("");
-    }
 
-    /*
-     * Animación de filas.
-     */
+                DOM.cuerpoTabla.appendChild(
+                    tr
+                );
 
-    const filasDOM =
-        elCuerpo.querySelectorAll(
-            "tr"
+            }
         );
 
-    filasDOM.forEach(
-        (fila, indice) => {
+    }
 
-            fila.style.opacity = "0";
-            fila.style.transform =
-                "translateY(7px)";
 
-            setTimeout(() => {
-
-                fila.style.transition =
-                    "opacity .25s ease, transform .25s ease";
-
-                fila.style.opacity = "1";
-                fila.style.transform =
-                    "translateY(0)";
-
-            }, indice * 25);
-        }
+    actualizarPaginacion(
+        total,
+        inicio,
+        fin,
+        totalPaginas
     );
 
-    if ($("page-info")) {
-
-        $("page-info").textContent =
-            `Página ${pagina} de ${totalPaginas}`;
-    }
-
-    if ($("prev-page")) {
-
-        $("prev-page").disabled =
-            pagina <= 1;
-    }
-
-    if ($("next-page")) {
-
-        $("next-page").disabled =
-            pagina >= totalPaginas;
-    }
 }
 
 
-/* ============================================================
-   RENDER PRINCIPAL
-   ============================================================ */
+/* =========================================================
+   PAGINACIÓN
+========================================================= */
 
-function render() {
+function actualizarPaginacion(
+    total,
+    inicio,
+    fin,
+    totalPaginas
+) {
 
-    const filas =
-        filtrar();
+    if (DOM.contador) {
 
-    pintarKPIs(filas);
+        DOM.contador.textContent =
+            `${formatearNumero(total)} clientes encontrados`;
 
-    pintarInsights(filas);
+    }
 
-    pintarMensual(filas);
 
-    pintarBarras(
-        "barras-region",
-        aggregate(
-            filas,
-            "Region_Zona"
-        ),
-        valor => {
+    if (DOM.pageInfo) {
 
-            if (elRegion) {
-                elRegion.value = valor;
-            }
+        if (!total) {
 
-            pagina = 1;
+            DOM.pageInfo.textContent =
+                "0 resultados";
 
-            render();
+        } else {
+
+            DOM.pageInfo.textContent =
+                `${inicio + 1}–${fin} de ${formatearNumero(total)}`;
+
         }
-    );
 
-    pintarBarras(
-        "barras-centro",
-        aggregate(
-            filas,
-            "Centro_Origen"
-        ),
-        valor => {
+    }
 
-            if (elCentro) {
-                elCentro.value = valor;
-            }
 
-            pagina = 1;
+    if (DOM.prevPage) {
 
-            render();
-        }
-    );
+        DOM.prevPage.disabled =
+            paginaActual <= 1;
 
-    pintarTopClientes(filas);
+    }
 
-    renderTable();
+
+    if (DOM.nextPage) {
+
+        DOM.nextPage.disabled =
+            paginaActual >=
+            totalPaginas;
+
+    }
+
 }
 
 
-/* ============================================================
-   RESET
-   ============================================================ */
+/* =========================================================
+   CAMBIAR PÁGINA
+========================================================= */
 
-function reset() {
+function cambiarPagina(
+    direccion
+) {
 
-    if (elCentro) {
-        elCentro.value = "";
+    const totalPaginas =
+        Math.max(
+            1,
+            Math.ceil(
+                datosFiltrados.length /
+                CONFIG.FILAS_POR_PAGINA
+            )
+        );
+
+
+    const nuevaPagina =
+        paginaActual +
+        direccion;
+
+
+    if (
+        nuevaPagina < 1 ||
+        nuevaPagina > totalPaginas
+    ) {
+
+        return;
+
     }
 
-    if (elRegion) {
-        elRegion.value = "";
+
+    paginaActual =
+        nuevaPagina;
+
+
+    renderizarTabla();
+
+
+    const tabla =
+        document.querySelector(
+            ".table-panel"
+        );
+
+
+    if (tabla) {
+
+        tabla.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
     }
 
-    if (elCiudad) {
-        elCiudad.value = "";
-    }
-
-    if (elCanal) {
-        elCanal.value = "";
-    }
-
-    if (elBuscar) {
-        elBuscar.value = "";
-    }
-
-    pagina = 1;
-
-    ordenCol =
-        "PNV_2025_CLP";
-
-    ordenAsc = false;
-
-    render();
 }
 
 
-/* ============================================================
-   INICIALIZACIÓN
-   ============================================================ */
+/* =========================================================
+   ORDENAR TABLA
+========================================================= */
 
-function init() {
+function ordenarTabla(
+    columna
+) {
 
-    /*
-     * Cargar opciones.
-     */
+    if (
+        ordenActual.columna ===
+        columna
+    ) {
 
-    poblarSelect(
-        elCentro,
-        payload?.opciones?.centros || []
-    );
+        ordenActual.direccion *= -1;
 
-    poblarSelect(
-        elRegion,
-        payload?.opciones?.regiones || []
-    );
+    } else {
 
-    poblarSelect(
-        elCiudad,
-        payload?.opciones?.ciudades || []
-    );
+        ordenActual = {
 
-    poblarSelect(
-        elCanal,
-        payload?.opciones?.canales || []
-    );
+            columna,
 
+            direccion: 1
 
-    /*
-     * Eventos de filtros.
-     */
+        };
 
-    [
-        elCentro,
-        elRegion,
-        elCiudad,
-        elCanal
-    ].forEach(elemento => {
-
-        if (!elemento) {
-            return;
-        }
-
-        elemento.addEventListener(
-            "change",
-            () => {
-
-                pagina = 1;
-
-                render();
-            }
-        );
-    });
-
-
-    /*
-     * Buscador.
-     */
-
-    if (elBuscar) {
-
-        elBuscar.addEventListener(
-            "input",
-            () => {
-
-                pagina = 1;
-
-                render();
-            }
-        );
     }
 
 
-    /*
-     * Restablecer.
-     */
-
-    if ($("btn-reset")) {
-
-        $("btn-reset").addEventListener(
-            "click",
-            reset
-        );
-    }
+    paginaActual = 1;
 
 
-    /*
-     * PDF.
-     */
-
-    if ($("btn-pdf")) {
-
-        $("btn-pdf").addEventListener(
-            "click",
-            () => {
-                window.print();
-            }
-        );
-    }
+    renderizarTabla();
 
 
-    /*
-     * Paginación.
-     */
+    actualizarIndicadorOrden(
+        columna
+    );
 
-    if ($("prev-page")) {
+}
 
-        $("prev-page").addEventListener(
-            "click",
-            () => {
 
-                if (pagina > 1) {
-                    pagina--;
-                    render();
+/* =========================================================
+   INDICADOR ORDEN
+========================================================= */
+
+function actualizarIndicadorOrden(
+    columna
+) {
+
+    $$(".table-panel th[data-col]")
+        .forEach(
+            th => {
+
+                const textoOriginal =
+                    th.dataset.label ||
+                    th.textContent
+                        .replace(
+                            /[↑↓]\s*$/,
+                            ""
+                        )
+                        .trim();
+
+
+                th.dataset.label =
+                    textoOriginal;
+
+
+                th.textContent =
+                    textoOriginal;
+
+
+                if (
+                    th.dataset.col ===
+                    columna
+                ) {
+
+                    th.textContent +=
+                        ordenActual.direccion === 1
+                            ? " ↑"
+                            : " ↓";
+
                 }
+
             }
         );
+
+}
+
+
+/* =========================================================
+   COMPARAR
+========================================================= */
+
+function compararValores(
+    a,
+    b
+) {
+
+    const na =
+        Number(a);
+
+    const nb =
+        Number(b);
+
+
+    if (
+        !Number.isNaN(na) &&
+        !Number.isNaN(nb) &&
+        a !== "" &&
+        b !== ""
+    ) {
+
+        return na - nb;
+
     }
 
 
-    if ($("next-page")) {
+    return String(
+        a ?? ""
+    ).localeCompare(
+        String(
+            b ?? ""
+        ),
+        "es",
+        {
+            numeric: true,
+            sensitivity: "base"
+        }
+    );
 
-        $("next-page").addEventListener(
-            "click",
-            () => {
+}
 
-                pagina++;
-                render();
-            }
-        );
+
+/* =========================================================
+   CONTADOR FILTROS
+========================================================= */
+
+function actualizarContadorFiltros() {
+
+    if (!DOM.filterCount)
+        return;
+
+
+    const activos = [
+
+        filtros.centro,
+
+        filtros.region,
+
+        filtros.ciudad,
+
+        filtros.canal,
+
+        filtros.buscar
+
+    ]
+        .filter(
+            Boolean
+        )
+        .length;
+
+
+    if (!activos) {
+
+        DOM.filterCount.textContent =
+            "Vista completa";
+
+        return;
+
     }
+
+
+    DOM.filterCount.textContent =
+        `${formatearNumero(
+            datosFiltrados.length
+        )} registros · ${activos} filtro${
+            activos === 1
+                ? ""
+                : "s"
+        }`;
+
+}
+
+
+/* =========================================================
+   HELPERS — SUMA
+========================================================= */
+
+function sumarCampo(
+    filas,
+    campo
+) {
+
+    return filas.reduce(
+        (
+            total,
+            fila
+        ) =>
+            total +
+            numero(
+                fila?.[campo]
+            ),
+        0
+    );
+
+}
+
+
+/* =========================================================
+   HELPERS — ÚNICOS
+========================================================= */
+
+function contarUnicos(
+    filas,
+    getter
+) {
+
+    const set =
+        new Set();
+
+
+    filas.forEach(
+        fila => {
+
+            const valor =
+                getter(fila);
+
+
+            if (
+                valor !== null &&
+                valor !== undefined &&
+                String(valor).trim() !== ""
+            ) {
+
+                set.add(
+                    String(valor)
+                );
+
+            }
+
+        }
+    );
+
+
+    return set.size;
+
+}
+
+
+/* =========================================================
+   FORMATO NÚMERO
+========================================================= */
+
+function formatearNumero(
+    valor
+) {
+
+    return Math.round(
+        Number(valor) || 0
+    ).toLocaleString(
+        "es-CL"
+    );
+
+}
+
+
+/* =========================================================
+   FORMATO DECIMAL
+========================================================= */
+
+function formatearNumeroDecimal(
+    valor
+) {
+
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        "es-CL",
+        {
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 1
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FORMATO CLP
+========================================================= */
+
+function formatearCLP(
+    valor
+) {
+
+    const numeroValor =
+        Number(valor) || 0;
+
+
+    return numeroValor.toLocaleString(
+        "es-CL",
+        {
+            maximumFractionDigits: 0
+        }
+    ) + " CLP";
+
+}
+
+
+/* =========================================================
+   FORMATO COMPACTO
+========================================================= */
+
+function formatearCompacto(
+    valor
+) {
+
+    const numeroValor =
+        Number(valor) || 0;
+
+
+    if (
+        Math.abs(numeroValor) >=
+        1000000000
+    ) {
+
+        return (
+            numeroValor /
+            1000000000
+        ).toFixed(1) + "B";
+
+    }
+
+
+    if (
+        Math.abs(numeroValor) >=
+        1000000
+    ) {
+
+        return (
+            numeroValor /
+            1000000
+        ).toFixed(1) + "M";
+
+    }
+
+
+    if (
+        Math.abs(numeroValor) >=
+        1000
+    ) {
+
+        return (
+            numeroValor /
+            1000
+        ).toFixed(0) + "K";
+
+    }
+
+
+    return Math.round(
+        numeroValor
+    ).toString();
+
+}
+
+
+/* =========================================================
+   CONVERTIR A NÚMERO
+========================================================= */
+
+function numero(
+    valor
+) {
+
+    if (
+        typeof valor ===
+        "number"
+    ) {
+
+        return Number.isFinite(
+            valor
+        )
+            ? valor
+            : 0;
+
+    }
+
+
+    if (
+        valor === null ||
+        valor === undefined ||
+        valor === ""
+    ) {
+
+        return 0;
+
+    }
+
+
+    let texto =
+        String(valor)
+            .trim()
+            .replace(
+                /\s/g,
+                ""
+            );
 
 
     /*
-     * Ordenamiento.
-     */
+       Manejo de formatos:
+
+       1.234.567,89
+       1234567.89
+       1234567
+    */
+
+    if (
+        texto.includes(",") &&
+        texto.includes(".")
+    ) {
+
+        if (
+            texto.lastIndexOf(",") >
+            texto.lastIndexOf(".")
+        ) {
+
+            texto =
+                texto
+                    .replace(
+                        /\./g,
+                        ""
+                    )
+                    .replace(
+                        ",",
+                        "."
+                    );
+
+        } else {
+
+            texto =
+                texto.replace(
+                    /,/g,
+                    ""
+                );
+
+        }
+
+    } else if (
+        texto.includes(",")
+    ) {
+
+        texto =
+            texto.replace(
+                ",",
+                "."
+            );
+
+    }
+
+
+    texto =
+        texto.replace(
+            /[^\d.-]/g,
+            ""
+        );
+
+
+    const resultado =
+        Number(texto);
+
+
+    return Number.isFinite(
+        resultado
+    )
+        ? resultado
+        : 0;
+
+}
+
+
+/* =========================================================
+   ESCAPAR HTML
+========================================================= */
+
+function escapeHTML(
+    valor
+) {
+
+    if (
+        valor === null ||
+        valor === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(valor)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+function setText(
+    elemento,
+    texto
+) {
+
+    if (elemento) {
+
+        elemento.textContent =
+            texto;
+
+    }
+
+}
+
+
+/* =========================================================
+   ESTADO VACÍO
+========================================================= */
+
+function mostrarVacio(
+    contenedor,
+    mensaje
+) {
+
+    if (!contenedor)
+        return;
+
+
+    contenedor.innerHTML = `
+
+        <div class="empty">
+
+            ${escapeHTML(
+                mensaje
+            )}
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   ERROR DASHBOARD
+========================================================= */
+
+function mostrarErrorDashboard(
+    error
+) {
+
+    console.error(
+        error
+    );
+
+
+    const contenedores = [
+
+        DOM.chartMonthly,
+
+        DOM.barrasRegion,
+
+        DOM.barrasCentro,
+
+        DOM.topClientes
+
+    ];
+
+
+    contenedores.forEach(
+        contenedor => {
+
+            mostrarVacio(
+                contenedor,
+                "No se pudieron cargar los datos."
+            );
+
+        }
+    );
+
+
+    setText(
+        DOM.filterCount,
+        "Error al cargar datos"
+    );
+
+
+    setText(
+        DOM.kpiPNV,
+        "—"
+    );
+
+
+    setText(
+        DOM.kpiClientes,
+        "—"
+    );
+
+
+    setText(
+        DOM.kpiCentros,
+        "—"
+    );
+
+
+    setText(
+        DOM.kpiRegiones,
+        "—"
+    );
+
+}
+
+
+/* =========================================================
+   TOOLTIP
+========================================================= */
+
+function mostrarTooltip(
+    event,
+    contenido
+) {
+
+    if (!DOM.tooltip)
+        return;
+
+
+    DOM.tooltip.innerHTML =
+        contenido;
+
+
+    DOM.tooltip.classList.add(
+        "show"
+    );
+
+
+    DOM.tooltip.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+
+    posicionarTooltip(
+        event
+    );
+
+}
+
+
+/* =========================================================
+   MOVER TOOLTIP
+========================================================= */
+
+function moverTooltip(
+    event
+) {
+
+    posicionarTooltip(
+        event
+    );
+
+}
+
+
+/* =========================================================
+   POSICIONAR TOOLTIP
+========================================================= */
+
+function posicionarTooltip(
+    event
+) {
+
+    if (!DOM.tooltip)
+        return;
+
+
+    const separacion = 14;
+
+
+    let x =
+        event.clientX +
+        separacion;
+
+
+    let y =
+        event.clientY +
+        separacion;
+
+
+    const rect =
+        DOM.tooltip.getBoundingClientRect();
+
+
+    if (
+        x +
+        rect.width >
+        window.innerWidth -
+        10
+    ) {
+
+        x =
+            event.clientX -
+            rect.width -
+            separacion;
+
+    }
+
+
+    if (
+        y +
+        rect.height >
+        window.innerHeight -
+        10
+    ) {
+
+        y =
+            event.clientY -
+            rect.height -
+            separacion;
+
+    }
+
+
+    DOM.tooltip.style.left =
+        `${Math.max(
+            8,
+            x
+        )}px`;
+
+
+    DOM.tooltip.style.top =
+        `${Math.max(
+            8,
+            y
+        )}px`;
+
+}
+
+
+/* =========================================================
+   OCULTAR TOOLTIP
+========================================================= */
+
+function ocultarTooltip() {
+
+    if (!DOM.tooltip)
+        return;
+
+
+    DOM.tooltip.classList.remove(
+        "show"
+    );
+
+
+    DOM.tooltip.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+}
+
+
+/* =========================================================
+   ANIMACIÓN EXTRA PARA BARRAS
+========================================================= */
+
+function reiniciarAnimacionesBarras() {
+
+    const barras =
+        document.querySelectorAll(
+            ".bar-fill"
+        );
+
+
+    barras.forEach(
+        barra => {
+
+            barra.style.animation =
+                "none";
+
+
+            void barra.offsetWidth;
+
+
+            barra.style.animation =
+                `grow ${CONFIG.DURACION_BARRAS}ms ease forwards`;
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   OBSERVER PARA ANIMACIONES
+========================================================= */
+
+function configurarObserverAnimaciones() {
+
+    if (
+        !("IntersectionObserver" in window)
+    ) {
+
+        return;
+
+    }
+
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(
+                    entry => {
+
+                        if (
+                            entry.isIntersecting
+                        ) {
+
+                            entry.target.classList.add(
+                                "is-visible"
+                            );
+
+                            observer.unobserve(
+                                entry.target
+                            );
+
+                        }
+
+                    }
+                );
+
+            },
+            {
+                threshold: 0.08
+            }
+        );
+
 
     document
         .querySelectorAll(
-            "th[data-col]"
+            ".kpi-card, .insight-card, .panel"
         )
-        .forEach(th => {
+        .forEach(
+            elemento =>
+                observer.observe(
+                    elemento
+                )
+        );
 
-            th.addEventListener(
-                "click",
-                () => {
-
-                    const columna =
-                        th.dataset.col;
-
-                    if (
-                        ordenCol === columna
-                    ) {
-
-                        ordenAsc =
-                            !ordenAsc;
-
-                    } else {
-
-                        ordenCol =
-                            columna;
-
-                        ordenAsc = true;
-                    }
-
-                    pagina = 1;
-
-                    render();
-                }
-            );
-        });
-
-
-    /*
-     * Primer render.
-     */
-
-    render();
-
-
-    /*
-     * Animación general.
-     */
-
-    setTimeout(
-        animarTarjetas,
-        50
-    );
 }
 
 
-/* ============================================================
-   CARGA DEL JSON
-   ============================================================ */
+/* =========================================================
+   ACTUALIZAR ANIMACIONES DESPUÉS DE RENDER
+========================================================= */
 
-console.log(
-    "========================================"
-);
-
-console.log(
-    " NESTLÉ CHILE — DASHBOARD 2025"
-);
-
-console.log(
-    " Cargando datos..."
-);
-
-console.log(
-    "========================================"
-);
+const observerOriginal =
+    renderizarTodo;
 
 
-fetch(
-    "datos_dashboard.json?v=" +
-    Date.now(),
-    {
-        cache: "no-store"
-    }
-)
+renderizarTodo = function () {
 
-    .then(respuesta => {
+    observerOriginal();
 
-        if (!respuesta.ok) {
+    setTimeout(
+        reiniciarAnimacionesBarras,
+        20
+    );
 
-            throw new Error(
-                `HTTP ${respuesta.status}`
-            );
-        }
+    setTimeout(
+        configurarObserverAnimaciones,
+        30
+    );
 
-        return respuesta.json();
-    })
+};
 
-    .then(json => {
 
-        console.log(
-            "[OK] datos_dashboard.json cargado."
-        );
+/* =========================================================
+   ATAJOS DE TECLADO
+========================================================= */
 
-        console.log(
-            "[INFO] Registros:",
-            json.tabla?.length || 0
-        );
-
-        console.log(
-            "[INFO] Meses:",
-            json.mensual?.length || 0
-        );
-
-        payload = json;
-
-        datos =
-            Array.isArray(json.tabla)
-                ? json.tabla
-                : [];
-
-        init();
-    })
-
-    .catch(error => {
-
-        console.error(
-            "[ERROR] Dashboard:",
-            error
-        );
-
-        if (elContador) {
-
-            elContador.textContent =
-                "Error cargando datos_dashboard.json: " +
-                error.message;
-        }
+document.addEventListener(
+    "keydown",
+    event => {
 
         /*
-         * Mostrar también el error en el gráfico
-         * para que sea visible.
-         */
+           ESC = limpiar búsqueda
+        */
 
-        if ($("chart-monthly")) {
+        if (
+            event.key ===
+            "Escape"
+        ) {
 
-            $("chart-monthly").innerHTML = `
-                <div class="empty">
-                    <strong>
-                        Error cargando el dashboard
-                    </strong>
-                    <br><br>
-                    ${escapar(error.message)}
-                </div>
-            `;
+            if (
+                document.activeElement ===
+                DOM.buscar
+            ) {
+
+                DOM.buscar.value = "";
+
+                manejarFiltros();
+
+            }
+
         }
-    });
+
+
+        /*
+           Ctrl + P = impresión
+        */
+
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() === "p"
+        ) {
+
+            /*
+               Dejamos que el navegador
+               maneje Ctrl+P normalmente.
+            */
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   LOG DE DIAGNÓSTICO
+========================================================= */
+
+console.log(
+    "%cNestlé Dashboard V2",
+    "font-size:18px;font-weight:bold;color:#0b7f88"
+);
+
+console.log(
+    "Script compatible con index.html / style.css V2"
+);
+
+console.log(
+    "Esperando datos_dashboard.json..."
+);
