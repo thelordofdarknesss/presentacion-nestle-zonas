@@ -1,70 +1,671 @@
 <!DOCTYPE html>
 <html lang="es">
-<head> 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clientes Helados — Nestlé Chile</title>
-  <link rel="stylesheet" href="style.css">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+        content="Dashboard comercial de clientes de helados — Nestlé Chile">
+
+    <title>Clientes Helados — Nestlé Chile | Dashboard 2025</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div class="contenedor">
 
-  <header class="encabezado">
-    <h1>Clientes Helados — Nestlé Chile</h1>
-    <p>Jerarquía comercial por centro de distribución, región y ciudad · Año 2025</p>
-  </header>
+    <div class="app-shell">
 
-  <div class="kpis">
-    <div class="kpi"><div class="numero" id="kpi-clientes">—</div><div class="rotulo">Clientes / Subcuentas</div></div>
-    <div class="kpi"><div class="numero" id="kpi-centros">—</div><div class="rotulo">Centros de distribución</div></div>
-    <div class="kpi"><div class="numero" id="kpi-regiones">—</div><div class="rotulo">Regiones con venta</div></div>
-    <div class="kpi"><div class="numero" id="kpi-pnv">—</div><div class="rotulo">PNV total 2025 (CLP)</div></div>
-  </div>
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+        <header class="topbar">
 
-  <div class="paneles">
-    <div class="panel">
-      <h2>Clientes por región</h2>
-      <div id="barras-region"></div>
+            <div class="header-info">
+
+                <div class="eyebrow">
+                    <span class="status-dot"></span>
+                    DASHBOARD COMERCIAL · 2025
+                </div>
+
+                <h1>
+                    Clientes Helados
+                    <span>— Nestlé Chile</span>
+                </h1>
+
+                <p>
+                    Jerarquía comercial, distribución y PNV por
+                    centro, región y cliente.
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <button
+                    class="btn btn-ghost"
+                    id="btn-reset"
+                    type="button">
+
+                    ↺ Restablecer
+
+                </button>
+
+
+                <button
+                    class="btn btn-primary"
+                    id="btn-pdf"
+                    type="button">
+
+                    ▣ Exportar PDF
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             FILTROS
+        ====================================================== -->
+
+        <section class="filterbar">
+
+            <div class="filter-title">
+                FILTROS
+            </div>
+
+
+            <select id="f-centro">
+
+                <option value="">
+                    Todos los centros
+                </option>
+
+            </select>
+
+
+            <select id="f-region">
+
+                <option value="">
+                    Todas las regiones
+                </option>
+
+            </select>
+
+
+            <select id="f-ciudad">
+
+                <option value="">
+                    Todas las ciudades
+                </option>
+
+            </select>
+
+
+            <select id="f-canal">
+
+                <option value="">
+                    Todos los canales
+                </option>
+
+            </select>
+
+
+            <label class="searchbox">
+
+                <span>⌕</span>
+
+                <input
+                    id="f-buscar"
+                    type="search"
+                    placeholder="Buscar cliente, canal o ciudad"
+                    autocomplete="off">
+
+            </label>
+
+
+            <span
+                class="filter-count"
+                id="filter-count">
+
+                Vista completa
+
+            </span>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             CONTENIDO PRINCIPAL
+        ====================================================== -->
+
+        <main>
+
+
+            <!-- =================================================
+                 KPIs
+            ================================================== -->
+
+            <section class="kpi-grid">
+
+
+                <!-- PNV -->
+
+                <article class="kpi-card accent">
+
+                    <div class="kpi-icon">
+                        ◈
+                    </div>
+
+                    <div class="kpi-label">
+                        PNV filtrado
+                    </div>
+
+                    <div
+                        class="kpi-value"
+                        id="kpi-pnv">
+
+                        —
+
+                    </div>
+
+                    <div
+                        class="kpi-foot"
+                        id="kpi-pnv-foot">
+
+                        CLP · 2025
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- CLIENTES -->
+
+                <article class="kpi-card">
+
+                    <div class="kpi-icon">
+                        ◎
+                    </div>
+
+                    <div class="kpi-label">
+                        Clientes / subcuentas
+                    </div>
+
+                    <div
+                        class="kpi-value"
+                        id="kpi-clientes">
+
+                        —
+
+                    </div>
+
+                    <div class="kpi-foot">
+                        L5 con actividad
+                    </div>
+
+                </article>
+
+
+
+                <!-- CENTROS -->
+
+                <article class="kpi-card">
+
+                    <div class="kpi-icon">
+                        ⌂
+                    </div>
+
+                    <div class="kpi-label">
+                        Centros de distribución
+                    </div>
+
+                    <div
+                        class="kpi-value"
+                        id="kpi-centros">
+
+                        —
+
+                    </div>
+
+                    <div class="kpi-foot">
+                        Origen de venta
+                    </div>
+
+                </article>
+
+
+
+                <!-- REGIONES -->
+
+                <article class="kpi-card">
+
+                    <div class="kpi-icon">
+                        ⌁
+                    </div>
+
+                    <div class="kpi-label">
+                        Regiones con venta
+                    </div>
+
+                    <div
+                        class="kpi-value"
+                        id="kpi-regiones">
+
+                        —
+
+                    </div>
+
+                    <div class="kpi-foot">
+                        Cobertura geográfica
+                    </div>
+
+                </article>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 INSIGHTS
+            ================================================== -->
+
+            <section class="insight-grid">
+
+
+                <article class="insight-card">
+
+                    <span>
+                        Mayor cobertura
+                    </span>
+
+                    <strong id="insight-region">
+                        —
+                    </strong>
+
+                    <small id="insight-region-detail">
+                        —
+                    </small>
+
+                </article>
+
+
+
+                <article class="insight-card">
+
+                    <span>
+                        Centro con mayor cobertura
+                    </span>
+
+                    <strong id="insight-centro">
+                        —
+                    </strong>
+
+                    <small id="insight-centro-detail">
+                        —
+                    </small>
+
+                </article>
+
+
+
+                <article class="insight-card">
+
+                    <span>
+                        Mes de mayor PNV
+                    </span>
+
+                    <strong id="insight-month">
+                        —
+                    </strong>
+
+                    <small id="insight-month-detail">
+                        —
+                    </small>
+
+                </article>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 GRÁFICOS
+            ================================================== -->
+
+            <section class="dashboard-grid">
+
+
+                <!-- =============================================
+                     EVOLUCIÓN MENSUAL
+                ============================================== -->
+
+                <article class="panel panel-large">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h2>
+                                Evolución mensual del PNV
+                            </h2>
+
+                            <p>
+                                Pasa el cursor sobre los puntos
+                                para consultar el detalle.
+                            </p>
+
+                        </div>
+
+
+                        <div class="legend">
+
+                            <span class="legend-dot"></span>
+
+                            PNV 2025
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="chart-monthly"
+                        class="chart-area">
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- =============================================
+                     REGIONES
+                ============================================== -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h2>
+                                Clientes por región
+                            </h2>
+
+                            <p>
+                                Haz clic en una región para filtrarla.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="barras-region"
+                        class="bars">
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- =============================================
+                     CENTROS
+                ============================================== -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h2>
+                                Clientes por centro
+                            </h2>
+
+                            <p>
+                                Haz clic para aplicar el filtro.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="barras-centro"
+                        class="bars">
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- =============================================
+                     TOP CLIENTES
+                ============================================== -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h2>
+                                Top 10 clientes por PNV
+                            </h2>
+
+                            <p>
+                                Ranking según PNV 2025.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="top-clientes"
+                        class="top-list">
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 TABLA
+            ================================================== -->
+
+            <section class="panel table-panel">
+
+
+                <div class="panel-head table-head">
+
+                    <div>
+
+                        <h2>
+                            Detalle de clientes y distribución
+                        </h2>
+
+                        <p id="contador">
+                            —
+                        </p>
+
+                    </div>
+
+
+                    <div class="table-tip">
+
+                        ↕ Click en un encabezado para ordenar
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="table-scroll">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th data-col="Centro_Origen">
+                                    Centro
+                                </th>
+
+                                <th data-col="Region_Zona">
+                                    Región
+                                </th>
+
+                                <th data-col="Ciudad">
+                                    Ciudad
+                                </th>
+
+                                <th data-col="Canal_L4">
+                                    Canal / Holding
+                                </th>
+
+                                <th data-col="Cliente">
+                                    Cliente / Subcuenta (L5)
+                                </th>
+
+                                <th
+                                    data-col="Meses_Con_Venta"
+                                    class="num">
+
+                                    Meses
+
+                                </th>
+
+                                <th
+                                    data-col="Cajas_2025"
+                                    class="num">
+
+                                    Cajas
+
+                                </th>
+
+                                <th
+                                    data-col="PNV_2025_CLP"
+                                    class="num">
+
+                                    PNV 2025
+
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="cuerpo-tabla">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     PAGINACIÓN
+                ============================================== -->
+
+                <div class="table-footer">
+
+                    <span id="page-info">
+                        —
+                    </span>
+
+
+                    <div>
+
+                        <button
+                            class="page-btn"
+                            id="prev-page"
+                            type="button">
+
+                            ‹
+
+                        </button>
+
+
+                        <button
+                            class="page-btn"
+                            id="next-page"
+                            type="button">
+
+                            ›
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+
+        <!-- =====================================================
+             FOOTER
+        ====================================================== -->
+
+        <footer>
+
+            <span>
+                Generado desde export SAP · Python / pandas
+            </span>
+
+            <span>
+                Vista interactiva · Preparada para impresión / PDF
+            </span>
+
+        </footer>
+
     </div>
-    <div class="panel">
-      <h2>Clientes por centro de origen</h2>
-      <div id="barras-centro"></div>
+
+
+
+    <!-- =========================================================
+         TOOLTIP
+    ========================================================== -->
+
+    <div
+        id="tooltip"
+        class="tooltip"
+        aria-hidden="true">
+
     </div>
-  </div>
 
-  <div class="tabla-panel">
-    <h2>Tabla de clientes y distribución</h2>
-    <div class="filtros">
-      <select id="f-centro"><option value="">Todos los centros</option></select>
-      <select id="f-region"><option value="">Todas las regiones</option></select>
-      <select id="f-ciudad"><option value="">Todas las ciudades</option></select>
-      <select id="f-canal"><option value="">Todos los canales</option></select>
-      <input id="f-buscar" type="text" placeholder="Buscar cliente o subcuenta...">
-    </div>
-    <div class="contador" id="contador"></div>
-    <div class="tabla-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th data-col="Centro_Origen">Centro</th>
-            <th data-col="Region_Zona">Región</th>
-            <th data-col="Ciudad">Ciudad</th>
-            <th data-col="Canal_L4">Canal / Holding</th>
-            <th data-col="Cliente">Cliente / Subcuenta (L5)</th>
-            <th data-col="Meses_Con_Venta" class="num">Meses</th>
-            <th data-col="Cajas_2025" class="num">Cajas 2025</th>
-            <th data-col="PNV_2025_CLP" class="num">PNV 2025 (CLP)</th>
-          </tr>
-        </thead>
-        <tbody id="cuerpo-tabla"></tbody>
-      </table>
-    </div>
-  </div>
 
-  <footer>Generado automáticamente desde export SAP con Python/pandas.</footer>
 
-</div>
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
+
 </body>
+
 </html>
